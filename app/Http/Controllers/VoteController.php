@@ -30,6 +30,8 @@ class VoteController extends Controller
             //'numero_telephone' => 'nullable|string' // idem téléphone
         ]);
 
+        Log::info('Nombre de votes reçu: ' . $validated['nombre_de_votes']);
+
         $miss = Miss::findOrFail($missId);
 
         if ($miss->statut !== 'active') {
@@ -65,7 +67,6 @@ class VoteController extends Controller
                     'montant' => 100, // prix unitaire vote
                     //'numero_telephone' => $request->numero_telephone ?? null,
                     //'email' => $request->email ?? null,
-                    'ip_adresse' => $request->ip(),
                 ]);
             }
 

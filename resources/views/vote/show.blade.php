@@ -73,6 +73,7 @@
         const voteAmountInput = document.getElementById('vote-amount');
         const totalPriceSpan = document.getElementById('total-price');
         const pricePerVote = 100;
+        let numberOfVotes = 1;
 
         voteAmountInput.addEventListener('input', function () {
             let amount = parseInt(this.value);
@@ -80,13 +81,13 @@
                 amount = 1;
                 this.value = 1;
             }
+            numberOfVotes = amount;
             const total = amount * pricePerVote;
             totalPriceSpan.textContent = total + ' FCFA';
         });
 
-        window.addEventListener('kkiapay.success', function (event) {
-            const amount = parseInt(voteAmountInput.value) || 1;
-            const total = amount * pricePerVote;
+        function successHandler(response) {
+            const total = numberOfVotes * pricePerVote;
             fetch('{{ route('vote.process', $miss->id) }}', {
                 method: 'POST',
                 headers: {
@@ -96,35 +97,37 @@
                 body: JSON.stringify({
                     montant: total,
                     moyen_paiement: 'kkiapay',
-                    email: '', // ajouter email de l'utilisateur ici
-                    numero_telephone: '', // optionnel
-                    transaction_id: event.detail.transactionId,
-                    nombre_de_votes: amount
+                    email: '',
+                    numero_telephone: '',
+                    transaction_id: response.transactionId,
+                    nombre_de_votes: numberOfVotes
                 })
             }).then(res => {
                 if (res.ok) {
                     window.location.href = '{{ route("vote.success", $miss->id) }}';
                 } else {
-                    alert('Erreur lors de l’enregistrement du vote');
+                    res.json().then(data => {
+                        console.error('Erreur du serveur:', data);
+                        alert('Erreur lors de l’enregistrement du vote: ' + (data.error || 'Erreur inconnue'));
+                    });
                 }
             });
-        });
+        }
 
-        // Appel Kkiapay au clic
+        addKkiapayListener('success', successHandler);
+
         const payButton = document.getElementById('pay-button');
         payButton.addEventListener('click', function () {
-            const amount = parseInt(voteAmountInput.value) || 1;
-            const totalBrut = amount * pricePerVote;
+            const totalBrut = numberOfVotes * pricePerVote;
             const totalNet = totalBrut * (1 - 0.02);
 
             openKkiapayWidget({
                 amount: totalNet,
                 key: "{{ config('services.kkiapay.public_key') }}",
-                sandbox: true, // ou false si prod
-                phone: "", // facultatif
+                sandbox: true,
+                phone: "",
                 name: "Miss {{ $miss->prenom }}",
-                email: "", // Tu peux pré-remplir ici ou ajouter un input dans le formulaire
-                callback: '{{ route("vote.success", $miss->id) }}'
+                email: "",
             });
         });
     });
