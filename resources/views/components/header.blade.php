@@ -2,7 +2,7 @@
     <div class="container mx-auto px-4 py-3 flex items-center justify-between h-16">
         <div class="flex items-center space-x-2">
             <a href="{{ route('home') }}">
-            <img src="{{ asset('storage/images/logoMissESGIS.png')}}" alt="Miss ESGIS Logo" class="h-20 w-20" />
+            <img src="{{ asset('storage/images/logoMissESGIS.png')}}" alt="Miss ESGIS Logo" class="h-16 w-16 md:h-20 md:w-20" />
                {{-- <span class="text-lg font-semibold text-gray-800">Miss ESGIS</span> --}}
             </a>
         </div>

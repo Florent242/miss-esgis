@@ -1,5 +1,5 @@
 @extends('layouts.base')
-@vite('resources/css/app.css')
+
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <a href="{{ route('home') }}" class="inline-flex items-center text-text-gray-600 hover:text-primary-pink mb-6 transition-colors duration-200">
@@ -43,9 +43,9 @@
     <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
         <h2 class="text-2xl font-bold text-text-gray-800 mb-4">Vidéo de présentation</h2>
         @if($video)
-            <div class="aspect-w-6 aspect-h-6 w-50">
+            <div class="aspect-w-16 aspect-h-9">
                 <iframe
-                    class="w-full h-90 rounded-lg object-cover d-flex justify-center align-items-center p-2"
+                    class="w-full h-full rounded-lg object-cover"
                     src="{{asset('media/'.basename($video->url))}}"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

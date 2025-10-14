@@ -21,7 +21,7 @@
         </div>
 
         @if ($topMiss)
-            <section class="mb-12 border-4 border-primary-pink bg-gradient-pink-light">
+            <section class="mb-12 border-2 md:border-4 border-primary-pink bg-gradient-pink-light">
                 <h2 class="text-2xl font-bold text-text-gray-800 mb-6 flex items-center justify-center md:justify-start">
                     👑
                     Candidate en tête
@@ -29,7 +29,7 @@
                 <div
                     class="rounded-xl shadow-lg p-6 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-6 ">
                     <img src="{{ $topMiss->photo_principale }}" alt="{{ $topMiss->prenom }} {{ $topMiss->nom }}"
-                        class="w-32 h-32 rounded-full object-cover shadow-md" />
+                        class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shadow-md" />
                     <div class="text-center md:text-left flex-grow">
                         <h3 class="text-2xl font-semibold text-text-gray-800">
                             {{ $topMiss->prenom }} {{ $topMiss->nom }}
@@ -52,7 +52,7 @@
         @endif
 
         <section id="vote-section">
-            <h2 class="text-2xl font-bold text-text-gray-800 mb-6">Toutes les candidates</h2>
+            <h2 class="text-2xl font-bold text-text-gray-800 mb-6 text-center md:text-left">Toutes les candidates</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach ($activeMisses as $candidate)
                     <x-cards.candidate-card :candidate="$candidate" />
