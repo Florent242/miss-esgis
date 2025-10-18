@@ -26,7 +26,7 @@ class AdminController extends Controller
         
         if(Auth::guard('admin')->check())
         {
-            $transactions = Transaction::with('miss')->get();
+            $transactions = Transaction::with('miss')->orderBy('date','desc')->get();
             $candidates= Miss::withCount('votes')->WhereYear('date_inscription',date('Y'))->orderBy('votes_count','desc')->get();
             $candidatesaprouver= Miss::withCount('votes')->where('statut','active')->WhereYear('date_inscription',date('Y'))->orderBy('votes_count','desc')->get();
             return view('admin.dashboard',["candidates"=>$candidates,"transactions"=>$transactions,"candidatesaprouver"=>$candidatesaprouver]);
