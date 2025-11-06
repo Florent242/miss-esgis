@@ -23,7 +23,7 @@
                 </svg>
                 <span style="border:1em ">Accueil</span>
             </a> --}}
-            <a href="{{ route('candidates.index') }}"
+            {{-- <a href="{{ route('candidates.index') }}"
                 class="text-gray-600 hover:text-primary-pink flex items-center space-x-1 transition-colors duration-200">
                 <svg fill="#000000" width="px" height="20px" viewBox="0 0 0.24 0.24" id="user"
                     data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color">
@@ -32,7 +32,7 @@
                         style="fill: rgb(0, 0, 0);" />
                 </svg>
                 <span>Candidates</span>
-            </a>
+            </a> --}}
             <a href="{{ route('candidates.create') }}"
                 class="text-gray-600 hover:text-primary-pink flex items-center space-x-1 transition-colors duration-200">
                 <svg fill="#000000" width="20px" height="20px" viewBox="0 0 0.6 0.6"
@@ -42,7 +42,7 @@
                 </svg>
                 <span>S'inscrire</span>
             </a>
-            <a href="{{ route('home') }}#vote-section"
+            {{-- <a href="{{ route('home') }}#vote-section"
                 class="text-gray-600 hover:text-primary-pink flex items-center space-x-1 transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
@@ -50,7 +50,7 @@
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>Voter</span>
-            </a>
+            </a> --}}
         </nav>
 
         <!-- Mobile Hamburger Menu -->

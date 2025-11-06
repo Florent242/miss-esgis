@@ -10,7 +10,7 @@
             </div>
         @endif
         <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-text-gray-900 mb-4">Miss ESGIS {{ date('Y') }} </h1>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-text-gray-900 mb-4">REINE ESGIS Bénin {{ date('Y') }} </h1>
             <p class="text-lg text-text-gray-600 mb-6">
                 Découvrez les candidates exceptionnelles et votez pour votre favorite
             </p>
