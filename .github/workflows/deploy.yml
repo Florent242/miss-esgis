@@ -71,21 +71,22 @@ jobs:
             # Créer le lien symbolique pour le storage (ignorer si existe déjà)
             php artisan storage:link 2>/dev/null || echo "Le lien symbolique existe déjà"
             
-            # Permissions
+            # Permissions (sans sudo - assurez-vous que les permissions sont déjà configurées)
             echo "Configuration des permissions..."
-            sudo chown -R ${{ secrets.SSH_USER }}:www-data storage bootstrap/cache
-            sudo chmod -R 775 storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache 2>/dev/null || echo "Permissions configurées"
             
-            # Redémarrer les services
+            # Redémarrer les services (sans sudo)
             echo "Redémarrage des services..."
             php artisan queue:restart || true
-            sudo systemctl reload php8.1-fpm
-            sudo systemctl reload nginx
+            
+            # Note: Les services PHP-FPM et Nginx ne seront pas rechargés automatiquement
+            # Vous devrez les recharger manuellement ou configurer sudo sans mot de passe
             
             # Remettre l'application en ligne
             php artisan up
             
             echo "Déploiement terminé avec succès !"
+            echo "Note: Rechargez manuellement php8.1-fpm et nginx si nécessaire"
           EOF
       - name: Deployment notification
         if: always()
