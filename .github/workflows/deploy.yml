@@ -1,0 +1,87 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+
+            echo "🚀 Déploiement en cours..."
+
+            # Aller dans le répertoire du projet
+            cd ${{ secrets.DEPLOY_PATH }}
+
+            # Mettre l'application en mode maintenance
+            php artisan down || true
+
+            # Récupérer les dernières modifications
+            echo "📥 Récupération des modifications..."
+            git pull origin main
+
+            # Installer/mettre à jour les dépendances Composer
+            echo "📦 Installation des dépendances PHP..."
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+
+            # Installer/mettre à jour les dépendances NPM et builder les assets
+            echo "🎨 Build des assets..."
+            npm install
+            npm run build
+
+            # Nettoyer et optimiser le cache
+            echo "🧹 Nettoyage du cache..."
+            php artisan config:clear
+            php artisan cache:clear
+            php artisan route:clear
+            php artisan view:clear
+
+            # Optimiser pour la production
+            echo "⚡ Optimisation..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            # Créer le lien symbolique pour le storage (si non existant)
+            php artisan storage:link || true
+
+            # Permissions
+            echo "Configuration des permissions..."
+            sudo chown -R ${{ secrets.SSH_USER }}:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
+
+            # Redémarrer les services
+            echo "Redémarrage des services..."
+            php artisan queue:restart || true
+            sudo systemctl reload php8.1-fpm
+            sudo systemctl reload nginx
+
+            # Remettre l'application en ligne
+            php artisan up
+
+            echo "Déploiement terminé avec succès !"
+          EOF
+
+      - name: Deployment notification
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "Déploiement réussi sur le serveur"
+          else
+            echo "Échec du déploiement"
+          fi
