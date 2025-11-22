@@ -23,7 +23,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
 
-            echo "🚀 Déploiement en cours..."
+            echo "Déploiement en cours..."
 
             # Aller dans le répertoire du projet
             cd ${{ secrets.DEPLOY_PATH }}
@@ -40,12 +40,12 @@ jobs:
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
             # Installer/mettre à jour les dépendances NPM et builder les assets
-            echo "🎨 Build des assets..."
+            echo "Build des assets..."
             npm install
             npm run build
 
             # Nettoyer et optimiser le cache
-            echo "🧹 Nettoyage du cache..."
+            echo "Nettoyage du cache..."
             php artisan config:clear
             php artisan cache:clear
             php artisan route:clear
