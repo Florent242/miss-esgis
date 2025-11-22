@@ -56,21 +56,20 @@ jobs:
             npm ci --prefer-offline --no-audit
             npm run build
             
-            # Nettoyer le cache (SANS view:cache qui pose problème)
+            # Nettoyer le cache
             echo "Nettoyage du cache..."
             php artisan config:clear
             php artisan cache:clear
             php artisan route:clear
             php artisan view:clear
             
-            # Optimiser pour la production (SANS view:cache)
+            # Optimiser pour la production
             echo "Optimisation..."
             php artisan config:cache
             php artisan route:cache
-            # NE PAS exécuter view:cache en production pour éviter les erreurs de composants
             
-            # Créer le lien symbolique pour le storage (si non existant)
-            php artisan storage:link || true
+            # Créer le lien symbolique pour le storage (ignorer si existe déjà)
+            php artisan storage:link 2>/dev/null || echo "Le lien symbolique existe déjà"
             
             # Permissions
             echo "Configuration des permissions..."
