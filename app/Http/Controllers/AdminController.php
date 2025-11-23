@@ -29,6 +29,12 @@ class AdminController extends Controller
             $transactions = Transaction::with('miss')->orderBy('date','desc')->get();
             $candidates= Miss::withCount('votes')->WhereYear('date_inscription',date('Y'))->orderBy('votes_count','desc')->get();
             $candidatesaprouver= Miss::withCount('votes')->where('statut','active')->WhereYear('date_inscription',date('Y'))->orderBy('votes_count','desc')->get();
+            
+            // Calculer l'âge pour chaque candidate
+            foreach ($candidates as $candidate) {
+                $candidate->age = \Carbon\Carbon::parse($candidate->date_naissance)->age;
+            }
+            
             return view('admin.dashboard',["candidates"=>$candidates,"transactions"=>$transactions,"candidatesaprouver"=>$candidatesaprouver]);
         }
          return redirect()->route("connexion")->with('error', "Veuillez vous connecter");
