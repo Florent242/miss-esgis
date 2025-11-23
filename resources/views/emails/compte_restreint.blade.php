@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candidature - Reine ESGIS</title>
+    <title>Accès restreint - Reine ESGIS</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            background: linear-gradient(135deg, #ffeef8 0%, #fff5f8 100%);
             padding: 15px;
             line-height: 1.5;
         }
@@ -18,16 +18,21 @@
             background: #ffffff;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(107, 114, 128, 0.12);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.12);
         }
         .header {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
             padding: 30px 20px;
             text-align: center;
         }
         .logo-icon {
             font-size: 45px;
             margin-bottom: 12px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
         .header h1 {
             color: white;
@@ -42,7 +47,6 @@
         }
         .content {
             padding: 25px 20px;
-            background: white;
         }
         .greeting {
             font-size: 15px;
@@ -56,17 +60,45 @@
             margin-bottom: 18px;
             line-height: 1.6;
         }
-        .message-box {
-            background: #f3f4f6;
-            border-left: 4px solid #6b7280;
+        .warning-box {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
             border-radius: 10px;
             padding: 15px;
             margin: 18px 0;
         }
-        .message-box p {
-            color: #374151;
+        .warning-badge {
+            display: inline-block;
+            background: #f59e0b;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+        .warning-box p {
+            color: #78350f;
             font-size: 13px;
             line-height: 1.6;
+        }
+        .reason-box {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 18px 0;
+        }
+        .reason-box h3 {
+            color: #991b1b;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .reason-box p {
+            color: #7f1d1d;
+            font-size: 12px;
+            line-height: 1.5;
         }
         .info-box {
             background: #dbeafe;
@@ -83,6 +115,24 @@
         }
         .info-box p {
             color: #1e3a8a;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .contact-box {
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 18px 0;
+        }
+        .contact-box h3 {
+            color: #065f46;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .contact-box p {
+            color: #064e3b;
             font-size: 12px;
             line-height: 1.5;
         }
@@ -106,8 +156,8 @@
 <body>
     <div class="email-wrapper">
         <div class="header">
-            <div class="logo-icon">📋</div>
-            <h1>Réponse à votre candidature</h1>
+            <div class="logo-icon">⚠️</div>
+            <h1>Accès temporairement restreint</h1>
             <p>Reine ESGIS {{ date('Y') }}</p>
         </div>
 
@@ -117,35 +167,42 @@
             </p>
 
             <div class="intro-text">
-                Nous vous remercions sincèrement pour l'intérêt que vous avez porté au concours <strong>Reine ESGIS {{ date('Y') }}</strong>.
+                Nous vous informons que votre accès à votre espace candidat <strong>Reine ESGIS {{ date('Y') }}</strong> a été temporairement restreint.
             </div>
 
-            <div class="message-box">
+            <div class="warning-box">
+                <div class="warning-badge">⛔ COMPTE RESTREINT</div>
                 <p>
-                    Après examen attentif de votre dossier, nous ne sommes malheureusement pas en mesure de retenir votre candidature pour cette édition.
+                    Vous ne pouvez plus vous connecter à votre espace personnel pour le moment.
                 </p>
             </div>
 
-            <div class="intro-text">
-                Cette décision ne reflète en rien votre valeur personnelle. Le processus de sélection est très compétitif et nous devons faire des choix difficiles.
+            <div class="reason-box">
+                <h3>📌 Raison</h3>
+                <p>{{ $raison ?? 'Non-respect du règlement du concours ou comportement inapproprié.' }}</p>
             </div>
 
             <div class="info-box">
-                <div class="info-box-title">💡 Pour l'avenir</div>
+                <div class="info-box-title">ℹ️ Ce que cela signifie</div>
                 <p>
-                    • Nous vous encourageons à retenter votre chance l'année prochaine<br>
-                    • N'hésitez pas à suivre nos autres événements<br>
-                    • Restez connectée via nos réseaux sociaux
+                    • Votre profil n'est plus visible publiquement<br>
+                    • Vous ne pouvez plus collecter de votes<br>
+                    • Accès à votre espace bloqué temporairement<br>
+                    • Situation réévaluée selon le règlement
+                </p>
+            </div>
+
+            <div class="contact-box">
+                <h3>💬 Besoin d'informations ?</h3>
+                <p>
+                    Si vous pensez qu'il s'agit d'une erreur ou souhaitez obtenir des clarifications, 
+                    n'hésitez pas à nous contacter à {{ env('MAIL_FROM_ADDRESS', 'contact@reine-esgis.com') }}
                 </p>
             </div>
 
             <div class="intro-text" style="margin-top: 20px;">
-                Nous vous souhaitons beaucoup de succès dans vos projets futurs.
+                Nous vous rappelons l'importance de respecter le règlement du concours pour garantir une compétition équitable.
             </div>
-
-            <p style="font-size: 13px; color: #374151; margin-top: 18px;">
-                Merci encore pour votre participation ! 🌟
-            </p>
 
             <div style="margin-top: 18px; color: #6b7280; font-size: 12px;">
                 Cordialement,<br>
