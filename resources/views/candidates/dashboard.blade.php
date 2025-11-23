@@ -129,7 +129,12 @@
                         </label>
                         <input type="file" name="video" id="video" accept="video/*" class="hidden">
                         <div id="video-preview" class="mt-4 hidden">
-                            <video id="video-preview-player" controls class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                            <video 
+                                id="video-preview-player" 
+                                controls 
+                                preload="metadata"
+                                class="w-full max-w-md mx-auto rounded-lg shadow-md"
+                            >
                                 <source id="video-preview-source" src="" type="">
                             </video>
                         </div>
@@ -226,7 +231,13 @@
                     @foreach ($medias as $media)
                         @if ($media->type === 'video')
                             <div class="flex flex-col items-center">
-                                <video controls class="w-full max-w-2xl h-auto rounded-lg shadow-md">
+                                <video 
+                                    controls 
+                                    preload="metadata"
+                                    class="w-full max-w-2xl h-auto rounded-lg shadow-md"
+                                    poster="{{ asset('storage/media/' . pathinfo($media->url, PATHINFO_FILENAME) . '_thumb.jpg') }}"
+                                    onloadstart="this.volume=0.5"
+                                >
                                     <source src="{{ asset('storage/media/' . $media->url) }}" type="video/{{ pathinfo($media->url, PATHINFO_EXTENSION) }}">
                                     Votre navigateur ne prend pas en charge la lecture de vidéo
                                 </video>
@@ -260,7 +271,12 @@
             </label>
             <input type="file" id="videomod" name="video" accept="video/*" class="hidden">
             <div id="videomod-preview" class="hidden mt-4">
-                <video id="videomod-preview-player" controls class="w-full rounded-lg shadow-md">
+                <video 
+                    id="videomod-preview-player" 
+                    controls 
+                    preload="metadata"
+                    class="w-full rounded-lg shadow-md"
+                >
                     <source id="videomod-preview-source" src="" type="">
                 </video>
             </div>
