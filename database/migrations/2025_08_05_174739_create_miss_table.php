@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nom', 100);
             $table->string('prenom', 100);
             $table->integer('age');
+            $table->date('date_naissance')->nullable();
             $table->string('pays', 100)->nullable();
             $table->string('email', 255)->nullable();
             $table->string('telephone', 20)->nullable();
