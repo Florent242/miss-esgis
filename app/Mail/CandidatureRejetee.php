@@ -13,14 +13,35 @@ class CandidatureRejetee extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(public $candidate) {}
+    public $prenom;
+    public $nom;
 
-    public function build()
+    public function __construct($candidate)
     {
-        return $this->markdown('emails.candidature_rejetee')
-            ->subject('Votre demande a été rejetée');
+        $this->prenom = $candidate->prenom;
+        $this->nom = $candidate->nom;
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Réponse à votre candidature - Reine ESGIS ' . date('Y'),
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.candidature_rejete',
+            with: [
+                'prenom' => $this->prenom,
+                'nom' => $this->nom,
+            ]
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [];
     }
 }

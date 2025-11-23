@@ -87,6 +87,30 @@ class AdminController extends Controller
         }
     }
 
+    public function approveAll()
+    {
+        $pendingCandidates = Miss::where('statut', 'pending')->get();
+        $count = $pendingCandidates->count();
+        
+        if ($count === 0) {
+            return redirect()->route("dashboardAdmin")->with('info', 'Aucune candidate en attente.');
+        }
+        
+        foreach ($pendingCandidates as $candidate) {
+            $candidate->statut = "active";
+            $candidate->save();
+            
+            // Envoi email avec gestion d'erreur
+            try {
+                Mail::to($candidate->email)->send(new CandidatureApprouvee($candidate));
+            } catch (\Throwable $e) {
+                logger()->error('Erreur envoi mail approbation pour ' . $candidate->email . ': ' . $e->getMessage());
+            }
+        }
+        
+        return redirect()->route("dashboardAdmin")->with('success', $count . ' candidate(s) approuvée(s) avec succès !');
+    }
+
     public function refuse($req)
     {
         $candidate = Miss::findOrFail($req);
@@ -109,6 +133,13 @@ class AdminController extends Controller
         $candidate->statut = "restricted";
         $candidate->save();
         
+        // Envoi email de notification
+        try {
+            Mail::to($candidate->email)->send(new \App\Mail\CompteRestreint($candidate));
+        } catch (\Throwable $e) {
+            logger()->error('Erreur envoi mail restriction: ' . $e->getMessage());
+        }
+        
         return redirect()->route("dashboardAdmin")->with('success', 'Accès restreint pour ' . $candidate->prenom . ' ' . $candidate->nom);
     }
 
@@ -118,6 +149,13 @@ class AdminController extends Controller
         $candidate->statut = "active";
         $candidate->save();
         
-        return redirect()->route("dashboardAdmin")->with('success', 'Accès activé pour ' . $candidate->prenom . ' ' . $candidate->nom);
+        // Envoi email de notification de réactivation
+        try {
+            Mail::to($candidate->email)->send(new \App\Mail\CompteReactive($candidate));
+            return redirect()->route("dashboardAdmin")->with('success', 'Accès activé et email envoyé à ' . $candidate->prenom . ' ' . $candidate->nom);
+        } catch (\Throwable $e) {
+            logger()->error('Erreur envoi mail réactivation: ' . $e->getMessage());
+            return redirect()->route("dashboardAdmin")->with('success', 'Accès activé mais erreur lors de l\'envoi de l\'email');
+        }
     }
 }

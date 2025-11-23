@@ -9,36 +9,33 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CandidatureApprouvee extends Mailable
+class CompteReactive extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $prenom;
     public $nom;
-    public $email;
 
     public function __construct($candidate)
     {
         $this->prenom = $candidate->prenom;
         $this->nom = $candidate->nom;
-        $this->email = $candidate->email;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🎉 Félicitations ! Votre candidature est approuvée - Reine ESGIS ' . date('Y'),
+            subject: '✅ Votre accès a été rétabli - Reine ESGIS ' . date('Y'),
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'emails.candidature_approuve',
+            view: 'emails.compte_reactive',
             with: [
                 'prenom' => $this->prenom,
                 'nom' => $this->nom,
-                'email' => $this->email,
             ]
         );
     }

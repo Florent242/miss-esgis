@@ -45,6 +45,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/dashboardAdmin', 'dashboard')->name('dashboardAdmin')->middleware('auth:admin');
     Route::post('/admin/logout', 'logout')->name('admin.logout')->middleware('auth:admin');
     Route::post('/admin/approve/{id}', 'approuve')->name('admin.approve')->middleware('auth:admin');
+    Route::post('/admin/approve-all', 'approveAll')->name('admin.approve.all')->middleware('auth:admin');
     Route::delete('/admin/reject/{id}', 'refuse')->name('admin.reject')->middleware('auth:admin');
     Route::post('/admin/restrict/{id}', 'restrict')->name('admin.restrict')->middleware('auth:admin');
     Route::post('/admin/activate/{id}', 'activate')->name('admin.activate')->middleware('auth:admin');

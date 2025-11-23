@@ -185,14 +185,10 @@
             </div>
 
             <div class="credentials-box">
-                <h3>🔐 Vos identifiants de connexion</h3>
+                <h3>🔐 Votre identifiant de connexion</h3>
                 <div class="credential-item">
                     <div class="credential-label">Email</div>
                     <div class="credential-value">{{ $email }}</div>
-                </div>
-                <div class="credential-item">
-                    <div class="credential-label">Mot de passe</div>
-                    <div class="credential-value">{{ $password }}</div>
                 </div>
             </div>
 
@@ -211,7 +207,7 @@
             </div>
 
             <div class="intro-text" style="margin-top: 20px;">
-                <strong>Important :</strong> Changez votre mot de passe après votre première connexion pour sécuriser votre compte.
+                <strong>Important :</strong> Utilisez le mot de passe que vous avez défini lors de votre inscription pour vous connecter.
             </div>
 
             <p style="font-size: 13px; color: #374151; margin-top: 20px;">

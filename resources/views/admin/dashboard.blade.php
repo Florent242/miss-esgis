@@ -238,7 +238,20 @@
             <div class="p-4 md:p-6">
                 <!-- Onglet En attente -->
                 <div id="content-candidates" class="tab-content">
-                    <h2 class="text-2xl font-bold text-orange-700 mb-4">Candidates en attente de validation</h2>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+                        <h2 class="text-2xl font-bold text-orange-700">Candidates en attente de validation</h2>
+                        @if($candidates->where('statut', 'pending')->count() > 0)
+                            <form action="{{ route('admin.approve.all') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir approuver toutes les candidates en attente ?')">
+                                @csrf
+                                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center text-sm">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Approuver toutes
+                                </button>
+                            </form>
+                        @endif
+                    </div>
                     @include('admin.partials.candidates-table', ['candidates' => $candidates->where('statut', 'pending')])
                 </div>
 

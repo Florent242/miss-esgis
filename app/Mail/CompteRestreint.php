@@ -3,13 +3,12 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CandidatureApprouvee extends Mailable
+class CompteRestreint extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -17,29 +16,24 @@ class CandidatureApprouvee extends Mailable
     public $nom;
     public $email;
 
-    public function __construct($candidate)
+    public function __construct($miss)
     {
-        $this->prenom = $candidate->prenom;
-        $this->nom = $candidate->nom;
-        $this->email = $candidate->email;
+        $this->prenom = $miss->prenom;
+        $this->nom = $miss->nom;
+        $this->email = $miss->email;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🎉 Félicitations ! Votre candidature est approuvée - Reine ESGIS ' . date('Y'),
+            subject: 'Compte Restreint - Reine ESGIS',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'emails.candidature_approuve',
-            with: [
-                'prenom' => $this->prenom,
-                'nom' => $this->nom,
-                'email' => $this->email,
-            ]
+            view: 'emails.compte_restreint',
         );
     }
 
