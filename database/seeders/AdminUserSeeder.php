@@ -21,6 +21,7 @@ class AdminUserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
+
         );
     }
 }
