@@ -46,6 +46,8 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('/admin/logout', 'logout')->name('admin.logout')->middleware('auth:admin');
     Route::post('/admin/approve/{id}', 'approuve')->name('admin.approve')->middleware('auth:admin');
     Route::delete('/admin/reject/{id}', 'refuse')->name('admin.reject')->middleware('auth:admin');
+    Route::post('/admin/restrict/{id}', 'restrict')->name('admin.restrict')->middleware('auth:admin');
+    Route::post('/admin/activate/{id}', 'activate')->name('admin.activate')->middleware('auth:admin');
     // Anciennes routes pour compatibilité
     Route::get('/approuve/{id}', 'approuve')->name('approuve')->middleware('auth:admin');
     Route::get('/refuse/{id}', 'refuse')->name('refuse')->middleware('auth:admin');

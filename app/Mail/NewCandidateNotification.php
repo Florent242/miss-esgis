@@ -21,7 +21,7 @@ class NewCandidateNotification extends Mailable
     public function build(): self
     {
         return $this
-            ->subject('Nouvelle candidature - Miss ESGIS ' . date('Y'))
+            ->subject('Nouvelle candidature - Reine ESGIS ' . date('Y'))
             ->view('emails.admin.new_candidate')
             ->with([
                 'miss' => $this->miss,

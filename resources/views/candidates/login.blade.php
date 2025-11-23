@@ -1,16 +1,14 @@
 @extends('layouts.base')
 
-@section('title', 'Connexion Candidate - Miss ESGIS')
+@section('title', 'Connexion Candidate - Reine ESGIS')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-orange-50 to-pink-100 px-4 py-12 overflow-x-hidden">
     <div class="max-w-md w-full">
         <!-- Logo et titre -->
         <div class="text-center mb-8 animate-fade-in">
-            <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full shadow-2xl mb-4 transform hover:scale-110 transition-transform duration-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
+            <div class="inline-flex items-center justify-center w-24 h-24 rounded-full shadow-2xl mb-4 transform hover:scale-110 transition-transform duration-300 overflow-hidden bg-white">
+                <img src="{{ asset('/images/logoMissESGIS.png')}}" alt="Reine ESGIS" class="w-full h-full object-cover" />
             </div>
             <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-600 via-pink-500 to-orange-500 bg-clip-text text-transparent mb-2">
                 Espace Candidate

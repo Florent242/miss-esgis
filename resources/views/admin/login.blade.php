@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.admin')
 @php
     $titre = 'Admin - Connexion Sécurisée';
 @endphp
@@ -16,7 +16,7 @@
                 </svg>
             </div>
             <h1 class="text-3xl font-extrabold text-white mb-2">Administration</h1>
-            <p class="text-gray-400">Accès sécurisé - Miss ESGIS {{ date('Y') }}</p>
+            <p class="text-gray-400">Accès sécurisé - Reine ESGIS {{ date('Y') }}</p>
         </div>
 
         <!-- Alerte d'erreur -->
@@ -35,7 +35,7 @@
         <div class="bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 p-8">
             <form action="" method="POST" class="space-y-6">
                 @csrf
-                
+
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
                         <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,11 +43,11 @@
                         </svg>
                         Identifiant
                     </label>
-                    <input 
-                        type="email" 
-                        name="email" 
+                    <input
+                        type="email"
+                        name="email"
                         id="email"
-                        placeholder="admin@exemple.com" 
+                        placeholder="admin@exemple.com"
                         class="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
                         required
                         autocomplete="username"
@@ -70,17 +70,17 @@
                         Mot de passe
                     </label>
                     <div class="relative">
-                        <input 
-                            type="password" 
-                            name="password" 
+                        <input
+                            type="password"
+                            name="password"
                             id="password"
-                            placeholder="••••••••" 
+                            placeholder="••••••••"
                             class="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
                             required
                             autocomplete="current-password"
                         >
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onclick="togglePassword()"
                             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
                         >
@@ -100,8 +100,8 @@
                     @enderror
                 </div>
 
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     class="w-full bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400 text-white font-bold py-3 rounded-xl hover:shadow-2xl hover:shadow-pink-500/50 transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center"
                 >
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@
     function togglePassword() {
         const passwordInput = document.getElementById('password');
         const eyeIcon = document.getElementById('eye-icon');
-        
+
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
             eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';

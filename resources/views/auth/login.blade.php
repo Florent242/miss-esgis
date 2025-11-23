@@ -1,6 +1,6 @@
 @extends('layouts.base')
 
-@section('title', 'Connexion - Miss ESGIS')
+@section('title', 'Connexion - Reine ESGIS')
 
 @section('content')
 <div class="max-w-md mx-auto px-4 py-6">

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Reine ESGIS') }}</title>
+    <title>@yield('title', 'Admin Dashboard') - {{ config('app.name', 'Reine ESGIS') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -13,18 +13,14 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @stack('styles')
 </head>
-<body class="font-sans antialiased bg-gradient-to-br from-custom-pink-50 to-custom-purple-50 min-h-screen flex flex-col">
-    <div class="min-h-screen flex flex-col">
-        @include('components.header')
-
-        <!-- Page Content -->
-        <main class="flex-grow">
-            @yield('content')
-        </main>
-
-        @include('components.footer')
-    </div>
+<body class="font-sans antialiased bg-gradient-to-br from-gray-50 via-pink-50 to-orange-50">
+    <!-- Page Content -->
+    <main>
+        @yield('content')
+    </main>
 
     @stack('scripts')
 </body>

@@ -15,8 +15,8 @@ class AdminUserSeeder extends Seeder
     {
         DB::table('admins')->insert([
             'nom' => 'Super',
-            'email' => 'admin@example.com',
-            'mot_de_passe' => Hash::make('password'), // change le mot de passe après
+            'email' => 'r3In3AdmIn@r3in3E5gI5.C0m',
+            'mot_de_passe' => Hash::make("A@.2dmIn2347@R3Ine#VI@nn3y.67.@"), // change le mot de passe après
             'created_at' => now(),
             'updated_at' => now(),
         ]);

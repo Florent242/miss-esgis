@@ -1,6 +1,6 @@
 @extends('layouts.base')
 @php
-    $titre = 'Dashboard admin - Miss ESGIS ' . date('Y');
+    $titre = 'Dashboard admin - Reine ESGIS ' . date('Y');
 @endphp
 
 @section('title', $titre)
@@ -98,7 +98,7 @@
                 <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 break-words">Gérer vos médias</h2>
                 <form action="/addmedia" method="post" enctype="multipart/form-data" class="space-y-4 md:space-y-6">
                     @csrf
-                    
+
                     @if ($candidate->photos_count < 4)
                     <div>
                         <h3 class="text-lg font-semibold text-gray-700 mb-3">Ajouter une photo</h3>
@@ -129,9 +129,9 @@
                         </label>
                         <input type="file" name="video" id="video" accept="video/*" class="hidden">
                         <div id="video-preview" class="mt-4 hidden">
-                            <video 
-                                id="video-preview-player" 
-                                controls 
+                            <video
+                                id="video-preview-player"
+                                controls
                                 preload="metadata"
                                 class="w-full max-w-md mx-auto rounded-lg shadow-md"
                             >
@@ -231,8 +231,8 @@
                     @foreach ($medias as $media)
                         @if ($media->type === 'video')
                             <div class="flex flex-col items-center">
-                                <video 
-                                    controls 
+                                <video
+                                    controls
                                     preload="metadata"
                                     class="w-full max-w-2xl h-auto rounded-lg shadow-md"
                                     poster="{{ asset('storage/media/' . pathinfo($media->url, PATHINFO_FILENAME) . '_thumb.jpg') }}"
@@ -271,9 +271,9 @@
             </label>
             <input type="file" id="videomod" name="video" accept="video/*" class="hidden">
             <div id="videomod-preview" class="hidden mt-4">
-                <video 
-                    id="videomod-preview-player" 
-                    controls 
+                <video
+                    id="videomod-preview-player"
+                    controls
                     preload="metadata"
                     class="w-full rounded-lg shadow-md"
                 >
@@ -411,7 +411,7 @@
                 spanphoto.innerText = "Photo sélectionnée ✓";
                 spanphoto.classList.add('text-green-600', 'font-semibold');
                 photoerror.innerText = "";
-                
+
                 // Afficher l'aperçu de l'image
                 const file = photo.files[0];
                 const reader = new FileReader();
@@ -436,13 +436,13 @@
                 spanvideo.innerText = "Vidéo sélectionnée ✓";
                 spanvideo.classList.add('text-green-600', 'font-semibold');
                 videoerror.innerText = "";
-                
+
                 // Afficher l'aperçu de la vidéo
                 const file = video.files[0];
                 const previewContainer = document.getElementById('video-preview');
                 const previewPlayer = document.getElementById('video-preview-player');
                 const previewSource = document.getElementById('video-preview-source');
-                
+
                 const fileURL = URL.createObjectURL(file);
                 previewSource.src = fileURL;
                 previewSource.type = file.type;
@@ -459,20 +459,20 @@
     // Animation upload modal
     const videomodInput = document.getElementById('videomod');
     const modphotoInput = document.getElementById('modphoto');
-    
+
     videomodInput?.addEventListener('change', function() {
         const label = document.getElementById('videomod-label');
         if(this.files.length > 0) {
             label.innerHTML = `Vidéo sélectionnée ✓`;
             label.parentElement.classList.add('bg-green-500');
             label.parentElement.classList.remove('bg-gradient-to-r', 'from-pink-500', 'to-orange-400');
-            
+
             // Afficher aperçu vidéo
             const file = this.files[0];
             const previewContainer = document.getElementById('videomod-preview');
             const previewPlayer = document.getElementById('videomod-preview-player');
             const previewSource = document.getElementById('videomod-preview-source');
-            
+
             const fileURL = URL.createObjectURL(file);
             previewSource.src = fileURL;
             previewSource.type = file.type;
@@ -487,7 +487,7 @@
             label.innerHTML = `Photo sélectionnée ✓`;
             label.parentElement.classList.add('bg-green-500');
             label.parentElement.classList.remove('bg-gradient-to-r', 'from-pink-500', 'to-orange-400');
-            
+
             // Afficher aperçu photo
             const file = this.files[0];
             const reader = new FileReader();

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->string('photo_principale', 255)->nullable();
             $table->string('mot_de_passe', 255)->nullable();
-            $table->enum('statut', ['pending', 'active', 'reject'])->default('pending');
+            $table->enum('statut', ['pending', 'active', 'reject', 'restricted'])->default('pending');
             $table->dateTime('date_inscription')->useCurrent();
         });
     }

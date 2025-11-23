@@ -1,7 +1,7 @@
 @component('mail::message')
 # 🎉 Félicitations {{ $candidate->prenom }} {{ $candidate->nom }} !
 
-Nous avons le plaisir de vous informer que votre candidature à l'élection **Miss ESGIS {{ date('Y') }}** a été **approuvée** ! ✨
+Nous avons le plaisir de vous informer que votre candidature à l'élection **Reine ESGIS {{ date('Y') }}** a été **approuvée** ! ✨
 
 Vous pouvez maintenant accéder à votre espace personnel pour :
 - 📸 Gérer vos photos et vidéos
@@ -23,6 +23,6 @@ Vous pouvez maintenant accéder à votre espace personnel pour :
 
 Bonne chance pour le concours ! 🌟
 
-Cordialement,  
-**L'équipe Miss ESGIS-Bénin**
+Cordialement,
+**L'équipe Reine ESGIS-Bénin**
 @endcomponent

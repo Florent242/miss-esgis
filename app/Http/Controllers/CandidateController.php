@@ -68,10 +68,14 @@ class CandidateController extends Controller
         $filename = 'miss' . time() . '.' . $request->file('photo_principale')->extension();
         $request->file('photo_principale')->storeAs('media', $filename, 'public');
 
+        // Calculer la date de naissance à partir de l'âge
+        $dateNaissance = now()->subYears($request->age)->format('Y-m-d');
+
         $miss = Miss::create([
             'nom'              => $request->nom,
             'prenom'           => $request->prenom,
             'age'              => $request->age,
+            'date_naissance'   => $dateNaissance,
             'pays'             => $request->ville.', '.$request->pays,
             'telephone'        => $request->telephone,
             'email'            => $request->email,

@@ -15,6 +15,7 @@ class Miss extends Authenticatable
         'nom',
         'prenom',
         'age',
+        'date_naissance',
         'pays',
         'telephone',
         'email',

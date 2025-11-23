@@ -96,4 +96,22 @@ class AdminController extends Controller
             return redirect()->route("dashboardAdmin")->with('success', 'Candidature rejetée mais erreur lors de l\'envoi de l\'email');
         }
     }
+
+    public function restrict($id)
+    {
+        $candidate = Miss::findOrFail($id);
+        $candidate->statut = "restricted";
+        $candidate->save();
+        
+        return redirect()->route("dashboardAdmin")->with('success', 'Accès restreint pour ' . $candidate->prenom . ' ' . $candidate->nom);
+    }
+
+    public function activate($id)
+    {
+        $candidate = Miss::findOrFail($id);
+        $candidate->statut = "active";
+        $candidate->save();
+        
+        return redirect()->route("dashboardAdmin")->with('success', 'Accès activé pour ' . $candidate->prenom . ' ' . $candidate->nom);
+    }
 }

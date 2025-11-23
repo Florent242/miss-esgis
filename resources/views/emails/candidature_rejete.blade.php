@@ -1,7 +1,7 @@
 @component('mail::message')
 # Bonjour {{ $candidate->prenom }} {{ $candidate->nom }},
 
-Nous vous remercions sincèrement pour votre intérêt et votre candidature à l'élection **Miss ESGIS {{ date('Y') }}**.
+Nous vous remercions sincèrement pour votre intérêt et votre candidature à l'élection **Reine ESGIS {{ date('Y') }}**.
 
 Malheureusement, après examen de votre dossier, nous ne pouvons pas donner suite à votre candidature cette année.
 
@@ -15,6 +15,6 @@ Cette décision ne remet pas en cause vos qualités personnelles. Le nombre de p
 
 Nous vous encourageons à retenter votre chance l'année prochaine ! 💪
 
-Cordialement,  
-**L'équipe Miss ESGIS-Bénin**
+Cordialement,
+**L'équipe Reine ESGIS-Bénin**
 @endcomponent

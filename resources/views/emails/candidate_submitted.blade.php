@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Candidature reçue - Miss ESGIS</title>
+    <title>Candidature reçue - Reine ESGIS</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -72,21 +72,21 @@
     <div class="container">
         <div class="header">
             <h1>✨ Candidature Reçue ✨</h1>
-            <p style="margin: 10px 0 0 0; opacity: 0.9;">Miss ESGIS {{ date('Y') }}</p>
+            <p style="margin: 10px 0 0 0; opacity: 0.9;">Reine ESGIS {{ date('Y') }}</p>
         </div>
 
         <div class="content">
             <h2 style="color: #111827; margin-bottom: 10px;">
                 Bonjour {{ $miss->prenom }} {{ $miss->nom }},
             </h2>
-            
+
             <p style="font-size: 16px; color: #374151;">
-                Nous avons bien reçu votre candidature à l'élection <strong>Miss ESGIS {{ date('Y') }}</strong> ! 🎉
+                Nous avons bien reçu votre candidature à l'élection <strong>Reine ESGIS {{ date('Y') }}</strong> ! 🎉
             </p>
 
             <div class="card">
                 <p style="margin: 0 0 10px 0;">
-                    <strong>Statut actuel :</strong> 
+                    <strong>Statut actuel :</strong>
                     <span class="status-badge">⏳ En cours de validation</span>
                 </p>
                 <p style="margin: 10px 0;">
@@ -117,13 +117,13 @@
 
             <p style="margin-top: 20px; color: #6b7280; font-size: 14px;">
                 Cordialement,<br>
-                <strong>L'équipe Miss ESGIS-Bénin</strong>
+                <strong>L'équipe Reine ESGIS-Bénin</strong>
             </p>
         </div>
 
         <div class="footer">
             <p style="margin: 5px 0;">Ceci est un message automatique, merci de ne pas y répondre directement.</p>
-            <p style="margin: 5px 0;">© {{ date('Y') }} Miss ESGIS-Bénin. Tous droits réservés.</p>
+            <p style="margin: 5px 0;">© {{ date('Y') }} Reine ESGIS-Bénin. Tous droits réservés.</p>
         </div>
     </div>
 </body>
