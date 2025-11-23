@@ -25,7 +25,13 @@ class Miss extends Authenticatable
         'statut',
         'date_inscription',
     ];
-     public $timestamps = false;
+    
+    protected $casts = [
+        'date_inscription' => 'datetime',
+        'date_naissance' => 'date',
+    ];
+    
+    public $timestamps = false;
     /**
      * Get the medias for the miss.
      */
