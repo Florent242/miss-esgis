@@ -52,16 +52,6 @@
 
         <!-- Navigation Links -->
         <nav class="flex flex-col gap-2 p-6">
-            <a href="{{ route('candidates.index') }}"
-                class="group flex items-center space-x-3 px-4 py-3 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 0.6 0.6">
-                        <path d="M0.525 0.5a0.05 0.05 0 0 1 -0.05 0.05H0.125a0.05 0.05 0 0 1 -0.05 -0.05 0.15 0.15 0 0 1 0.15 -0.15h0.15a0.15 0.15 0 0 1 0.15 0.15m-0.225 -0.2a0.125 0.125 0 1 0 -0.125 -0.125 0.125 0.125 0 0 0 0.125 0.125" />
-                    </svg>
-                </div>
-                <span class="font-semibold text-gray-800 group-hover:text-pink-600 transition-colors">Candidates</span>
-            </a>
-
             <a href="{{ route('candidates.create') }}"
                 class="group flex items-center space-x-3 px-4 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                 <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
@@ -70,16 +60,6 @@
                     </svg>
                 </div>
                 <span class="font-bold text-white">S'inscrire</span>
-            </a>
-
-            <a href="{{ route('home') }}#vote-section"
-                class="group flex items-center space-x-3 px-4 py-3 rounded-xl bg-green-50 hover:bg-green-100 border border-green-200 hover:border-green-300 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <span class="font-semibold text-gray-800 group-hover:text-green-600 transition-colors">Voter</span>
             </a>
         </nav>
 
