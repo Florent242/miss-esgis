@@ -65,7 +65,8 @@ class CandidateController extends Controller
         ]);
 
         // Stockage de la photo
-        $photoPath = $request->file('photo_principale')->store('media', 'public');
+        $filename = 'miss' . time() . '.' . $request->file('photo_principale')->extension();
+        $request->file('photo_principale')->storeAs('media', $filename, 'public');
 
         $miss = Miss::create([
             'nom'              => $request->nom,
@@ -75,7 +76,7 @@ class CandidateController extends Controller
             'telephone'        => $request->telephone,
             'email'            => $request->email,
             'mot_de_passe'     => Hash::make($request->password),
-            'photo_principale' => Storage::url($photoPath),
+            'photo_principale' => $filename,
             'bio'              => $request->bio,
             'statut'           => 'pending',
         ]);

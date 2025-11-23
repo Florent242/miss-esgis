@@ -1,334 +1,173 @@
 @extends('layouts.base')
 @php
-    $titre = 'Dashboard admin - Miss ESGIS ' . date('Y');
-
+    $titre = 'Dashboard Admin - Miss ESGIS ' . date('Y');
 @endphp
-@vite('resources/css/styleadmin.css')
+
 @section('title', $titre)
 
 @section('content')
-    <div class="content">
-        <section class="entete">
-            <h1>Interface Administrateur</h1>
-            <p>Gestion du concours Miss ESGIS {{ date('Y') }}</p>
-        </section>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-pink-50 to-orange-50 overflow-x-hidden">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- En-tête -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 break-words">
+                        Interface Administrateur
+                    </h1>
+                    <p class="text-gray-600 mt-2">Gestion du concours Miss ESGIS {{ date('Y') }}</p>
+                </div>
+                <form action="{{ route('admin.logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Déconnexion
+                    </button>
+                </form>
+            </div>
+        </div>
 
-        <section class="statistique">
-            <div id="bloc">
-                <div class="icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-users w-8 h-8 text-primary">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        <!-- Alertes -->
+        @if (session('success'))
+            <div class="mb-6 bg-green-500/10 border border-green-500/50 rounded-xl p-4 backdrop-blur-sm animate-fade-in">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                     </svg>
-                </div>
-                <div class="chiffre">
-                    @if (count($candidates) === 0)
-                        :
-                        <p>Aucune Candidate inscrite cette année</p>
-                    @else
-                        <h3>{{ count($candidates) }}</h3>
-                        <p>Candidates totales</p>
-                    @endif
+                    <p class="text-green-700 font-medium">{{ session('success') }}</p>
                 </div>
             </div>
-            <div id="bloc">
-                <div class="icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-vote w-8 h-8 text-primary">
-                        <path d="m9 12 2 2 4-4"></path>
-                        <path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7Z"></path>
-                        <path d="M22 19H2"></path>
-                    </svg>
-                </div>
-                <div class="chiffre">
-                    @if (count($candidates) === 0)
-                        :
-                        <p>Aucune Candidate inscrite cette année</p>
-                    @else
-                        <h3>{{ $candidates->sum('votes_count') }}</h3>
-                        <p>Votes totaux</p>
-                    @endif
-                </div>
-            </div>
-            <div id="bloc">
-                <div class="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">FCFA</div>
-                <div class="chiffre">
-                    @if (count($candidates) === 0)
-                        :
-                        <p>Aucune Candidate inscrite cette année</p>
-                    @else
-                        <h3>{{ $transactions->sum('montant') }}</h3>
-                        <p>Revenus</p>
-                    @endif
-                </div>
-            </div>
-            <div id="bloc">
-                <div class="icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-user w-8 h-8 text-orange-500">
-                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </div>
-                <div class="chiffre">
-                    @if (count($candidates) === 0)
-                        :
-                        <p>Aucune Candidate inscrite cette année</p>
-                    @else
-                        <h3>{{ count($candidates->where('statut', 'pending')) }}</h3>
-                        <p>En attente</p>
-                    @endif
-                </div>
-            </div>
-        </section>
+        @endif
 
-        <section class="detail">
-            <nav>
-                <span class="active" id="Candidates">Candidates</span>
-                <span id="candidatesaprouver">Candidates acceptées</span>
-                <span id="Classement">Classement</span>
-                <span id="Transactions">Transactions</span>
-            </nav>
-            @if (session('success'))
-                <div id="showtoast"
-                    style="background-color: #5aeb17ff; color: white; padding: 15px; border-radius: 5px; margin: 10px 0;">
-                    {{ session('success') }}</div>
-                <script>
-                    setTimeout(() => {
-                        if (document.getElementById('showtoast')) {
-                            document.getElementById('showtoast').style.opacity = '0'
-                            setTimeout(() => {
-                                document.getElementById('showtoast')?.remove()
-                            }, 500)
-                        }
-                    }, 3000)
-                </script>
-            @endif
-            <div id="tabStatistique">
-
+        <!-- Statistiques -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+            <!-- Candidates totales -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 border-l-4 border-pink-500">
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Candidates Totales</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-pink-600 mt-2">{{ count($candidates) }}</h3>
+                    </div>
+                    <div class="bg-pink-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                </div>
             </div>
-        </section>
+
+            <!-- Votes totaux -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Votes Totaux</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-purple-600 mt-2">{{ $candidates->sum('votes_count') }}</h3>
+                    </div>
+                    <div class="bg-purple-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenus -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Revenus</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-green-600 mt-2">{{ number_format($transactions->sum('montant'), 0, ',', ' ') }} FCFA</h3>
+                    </div>
+                    <div class="bg-green-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- En attente -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 border-l-4 border-orange-500">
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">En Attente</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-orange-600 mt-2">{{ count($candidates->where('statut', 'pending')) }}</h3>
+                    </div>
+                    <div class="bg-orange-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onglets -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="border-b border-gray-200">
+                <nav class="flex flex-wrap -mb-px">
+                    <button onclick="showTab('candidates')" id="tab-candidates" class="tab-button w-1/2 md:w-auto py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors border-pink-500 text-pink-600">
+                        Candidates
+                    </button>
+                    <button onclick="showTab('approved')" id="tab-approved" class="tab-button w-1/2 md:w-auto py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Acceptées
+                    </button>
+                    <button onclick="showTab('ranking')" id="tab-ranking" class="tab-button w-1/2 md:w-auto py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Classement
+                    </button>
+                    <button onclick="showTab('transactions')" id="tab-transactions" class="tab-button w-1/2 md:w-auto py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Transactions
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-4 md:p-6">
+                <!-- Onglet Candidates -->
+                <div id="content-candidates" class="tab-content">
+                    @include('admin.partials.candidates-table', ['candidates' => $candidates->where('statut', 'pending')])
+                </div>
+
+                <!-- Onglet Acceptées -->
+                <div id="content-approved" class="tab-content hidden">
+                    @include('admin.partials.approved-table', ['candidates' => $candidatesaprouver])
+                </div>
+
+                <!-- Onglet Classement -->
+                <div id="content-ranking" class="tab-content hidden">
+                    @include('admin.partials.ranking-table', ['candidates' => $candidates])
+                </div>
+
+                <!-- Onglet Transactions -->
+                <div id="content-transactions" class="tab-content hidden">
+                    @include('admin.partials.transactions-table', ['transactions' => $transactions])
+                </div>
+            </div>
+        </div>
     </div>
-    <script>
-        const Candidates = document.getElementById("Candidates")
-        const Classement = document.getElementById("Classement")
-        const Transactions = document.getElementById("Transactions")
-        const candidatesaprouver = document.getElementById("candidatesaprouver")
-        const tabStatistique = document.getElementById("tabStatistique")
-        const candidatesapp = @json($candidatesaprouver);
-        const candidates = @json($candidates);
-        if (candidates.length == 0) {
-            tabStatistique.innerHTML = `<h1>Gestion des candidates</h1>
-            <div>Aucune candidate inscrite</div>
-        `
-        } else {
-            tabStatistique.innerHTML = desinertabCandidat(candidates)
-        }
-        Classement.addEventListener("click", function() {
-            Candidates.className = ""
-            Classement.className = "active"
-            Transactions.className = ""
-            candidatesaprouver.className = ""
-            const candidates = @json($candidates);
+</div>
 
-            if (candidates.length == 0) {
-                tabStatistique.innerHTML = `<h1>Classement des candidates</h1>
-            <div>Aucune candidate inscrite</div>
-        `
-            } else {
-
-                let entete = `
-
-        <h1>Classement des candidates</h1>
-        <div class="candidate" id="premiere">
-                <div class="presentation">
-                    <p class="position">1</p>
-                    <div>
-                        <p class="nom">${candidates[0].nom +" "+candidates[0].prenom}</p>
-                        <p class="ville">${candidates[0].pays}</p>
-                    </div>
-                </div>
-                <div class="votes">
-                    <p>${candidates[0].votes_count}</p>
-                    <p>votes</p>
-                </div>
-                <div class="mention">
-                    En tete
-                </div>
-        </div>`
-                let contenu = "";
-                for (let i = 1; i < candidates.length; i++)
-                    contenu += `<div class="candidate">
-                <div class="presentation">
-                    <p class="position">${i+1}</p>
-                    <div>
-                        <p class="nom">${candidates[i].nom +" "+candidates[i].prenom}</p>
-                        <p class="ville">${candidates[i].pays}</p>
-                    </div>
-                </div>
-
-                <div class="votes">
-                     <p>${candidates[i].votes_count}</p>
-                    <p>votes</p>
-                </div>
-        </div>`
-                tabStatistique.innerHTML = entete + contenu
-            }
-        })
-
-
-        Candidates.addEventListener("click", function() {
-            Candidates.className = "active"
-            Classement.className = ""
-            Transactions.className = ""
-            candidatesaprouver.className = ""
-            if (candidates.length == 0) {
-                tabStatistique.innerHTML = `<h1>Gestion des candidates</h1>
-            <div>Aucune candidate inscrite</div>
-        `
-            } else {
-                tabStatistique.innerHTML = desinertabCandidat(candidates)
-            }
-        })
-
-        candidatesaprouver.addEventListener("click", function() {
-            Candidates.className = ""
-            Classement.className = ""
-            Transactions.className = ""
-            candidatesaprouver.className = "active"
-
-            if (candidatesapp.length == 0) {
-                tabStatistique.innerHTML = `<h1>Gestion des candidates</h1>
-            <div>Aucune candidate validé</div>
-        `
-            } else {
-                tabStatistique.innerHTML = desinertabCandidat(candidatesapp)
-            }
-        })
-
-        Transactions.addEventListener("click", function() {
-            Candidates.className = ""
-            Classement.className = ""
-            Transactions.className = "active"
-            const transactions = @json($transactions);
-            if (transactions.length == 0) {
-                tabStatistique.innerHTML = `<h1>Transactions</h1>
-            <div>Aucune transaction effectué</div>
-        `
-            } else {
-
-                const transactions = @json($transactions);
-                let contenu = "";
-                let i = 1;
-                const tetetab = `
-
-        <h1>Transactions</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID Transaction</t>
-
-                <th>Candidate</t>
-
-                <th>Montant</t>
-
-                <th>Méthode</t>
-
-                <th>Date</t>
-            </tr>
-        </thead>
-        <tbody>`;
-
-                for (let transaction of transactions) {
-                    contenu += `
-            <tr ${i%2==0 ? 'id="paire"':''}>
-                <td> <strong> ${transaction.id}</strong></td>
-                <td>${transaction.miss.nom +" "+transaction.miss.prenom}</td>
-                <td>${transaction.montant} Fcfa</td>
-                <td>${transaction.methode}</td>
-                <td>${transaction.date.split('T')[0]}</td>
-            </tr>
-            `
-                    i++
-                }
-                const fintab = `</tbody>
-    </table>
-        `
-                tabStatistique.innerHTML = tetetab + contenu + fintab
-            }
-
-        })
-
-
-        function desinertabCandidat(listcandidate) {
-
-            const candidates = listcandidate;
-            let contenu = "";
-            let i = 1;
-            const tetetab = `
-
-        <h1>Gestion des candidates</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Nom</t>
-
-                <th>Ville</t>
-
-                <th>Votes</t>
-
-                <th>Statut</t>
-
-                <th>Date inscription</t>
-
-                <th>Actions</t>
-            </tr>
-        </thead>
-        <tbody>`;
-
-            for (let candidate of candidates) {
-
-                let approuveroute = "{{ url('/approuve') }}/:id"
-                let rejeteroute = "{{ url('/refuse') }}/:id"
-
-                let status = ""
-                if (candidate.statut == "pending") {
-                    status = "En attente"
-                }
-                if (candidate.statut == "active") {
-                    status = "Aprouvée"
-                }
-                if (candidate.statut == "reject") {
-                    status = "Rejetée"
-                }
-                contenu += `
-            <tr ${i%2==0 ? 'id="paire"':''}>
-                <td> <strong> ${candidate.nom +" "+ candidate.prenom}</strong></td>
-                <td>${candidate.pays}</td>
-                <td>${candidate.votes_count}</td>
-                <td id="approuvee">${status}</td>
-                <td>${candidate.date_inscription.split('T')[0]}</td>
-                <td>
-                    <div class = "flex space-x-2">
-                    <a href="${approuveroute.replace(':id',candidate.id)}"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background hover:text-accent-foreground h-9 rounded-md px-3 text-green-600 border-green-600 hover:bg-green-50"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-4 h-4"><path d="M20 6 9 17l-5-5"></path></svg></button></a>
-                    <a href="${rejeteroute.replace(':id',candidate.id)}"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background hover:text-accent-foreground h-9 rounded-md px-3 text-red-600 border-red-600 hover:bg-red-50">✕</button></a>
-                    </div>
-                </td>
-            </tr>
-            `
-                i++
-            }
-            const fintab = `</tbody>
-    </table>
-        `
-            tab = tetetab + contenu + fintab
-            return tab
-        }
-    </script>
+<script>
+    function showTab(tabName) {
+        // Masquer tous les contenus
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        
+        // Réinitialiser tous les boutons
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.classList.remove('border-pink-500', 'text-pink-600');
+            button.classList.add('border-transparent', 'text-gray-500');
+        });
+        
+        // Afficher le contenu sélectionné
+        document.getElementById('content-' + tabName).classList.remove('hidden');
+        
+        // Activer le bouton sélectionné
+        const activeButton = document.getElementById('tab-' + tabName);
+        activeButton.classList.remove('border-transparent', 'text-gray-500');
+        activeButton.classList.add('border-pink-500', 'text-pink-600');
+    }
+</script>
 @endsection

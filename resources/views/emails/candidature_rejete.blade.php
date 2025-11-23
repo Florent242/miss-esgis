@@ -1,10 +1,20 @@
 @component('mail::message')
-# Bonjour {{ $candidate->name }}
+# Bonjour {{ $candidate->prenom }} {{ $candidate->nom }},
 
-Votre candidature à l'élection miss ESGIS-Bénin 2025 a été rejetée parce que vous n'êtes pas une de nos candidates sélectionnées !
+Nous vous remercions sincèrement pour votre intérêt et votre candidature à l'élection **Miss ESGIS {{ date('Y') }}**.
 
-En cas d'erreur veuillez vous rapprocher du comité d'organisation de Miss ESGIS-Bénin.
+Malheureusement, après examen de votre dossier, nous ne pouvons pas donner suite à votre candidature cette année.
 
-Merci,  
-L'équipe Miss ESGIS-Bénin
+Cette décision ne remet pas en cause vos qualités personnelles. Le nombre de places étant limité, nous avons dû faire des choix difficiles.
+
+---
+
+**Si vous pensez qu'il s'agit d'une erreur**, n'hésitez pas à contacter le comité d'organisation :
+- 📧 Email : {{ env('MAIL_FROM_ADDRESS', 'contact@missesgis.com') }}
+- 📱 En vous rapprochant directement de l'équipe
+
+Nous vous encourageons à retenter votre chance l'année prochaine ! 💪
+
+Cordialement,  
+**L'équipe Miss ESGIS-Bénin**
 @endcomponent

@@ -33,16 +33,8 @@ class Media extends Model
 
     public function getUrlAttribute($value)
     {
-        if (str_starts_with($value, 'http')) {
-            return $value;
-        }
-
-        // Si le chemin contient déjà "/storage", on le renvoie tel quel
-        if (str_starts_with($value, '/storage')) {
-            return $value;
-        }
-
-        return Storage::url($value);
+        // Retourner simplement la valeur stockée (juste le nom du fichier)
+        return $value;
     }
 
 

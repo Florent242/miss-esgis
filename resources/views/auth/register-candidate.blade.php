@@ -92,12 +92,12 @@
 
             <div class="md:col-span-2">
                 <label for="photo_principale" class="block text-sm font-medium text-text-gray-700">Photo principale *</label>
-                <div class="mt-1 flex items-center space-x-2">
-                    <label class="cursor-pointer bg-primary-pink hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">
+                <div class="mt-1 flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label class="cursor-pointer bg-primary-pink hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out shrink-0">
                         Choisir un fichier
-                        <input id="photo_principale" name="photo_principale" type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="document.getElementById('file-name').innerText = this.files[0] ? this.files[0].name : 'Aucun fichier choisi'" required />
+                        <input id="photo_principale" name="photo_principale" type="file" class="sr-only" accept="image/jpeg,image/png,image/jpg" onchange="document.getElementById('file-name').innerText = this.files[0] ? this.files[0].name : 'Aucun fichier choisi'" required />
                     </label>
-                    <span id="file-name" class="text-text-gray-500">Aucun fichier choisi</span>
+                    <span id="file-name" class="text-text-gray-500 text-sm truncate overflow-hidden max-w-full">Aucun fichier choisi</span>
                 </div>
                 <p class="text-xs text-text-gray-500 mt-1">Format accepté : JPG, PNG (max 5MB)</p>
                 @error('photo_principale')
@@ -132,11 +132,19 @@
     if (this.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
+            // Supprimer l'ancien aperçu s'il existe
+            const oldPreview = document.getElementById('image-preview');
+            if (oldPreview) {
+                oldPreview.remove();
+            }
+            
             const preview = document.createElement('img');
+            preview.id = 'image-preview';
             preview.src = e.target.result;
-            preview.classList.add('mt-2', 'rounded-lg', 'shadow');
+            preview.classList.add('mt-2', 'rounded-lg', 'shadow', 'w-full', 'sm:w-auto', 'object-cover');
             preview.style.maxWidth = '200px';
-            document.getElementById('file-name').after(preview);
+            preview.style.maxHeight = '200px';
+            document.getElementById('file-name').parentElement.after(preview);
         }
         reader.readAsDataURL(this.files[0]);
     }

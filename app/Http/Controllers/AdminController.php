@@ -38,31 +38,62 @@ class AdminController extends Controller
          $admin=Admin::where('email', $req->validated('email'))->first();
          if($admin)
          {
-            if ($admin->mot_de_passe === $req->validated('password') )
+            // Vérifier si le mot de passe est hashé ou non
+            $passwordMatch = false;
+            if (password_verify($req->validated('password'), $admin->mot_de_passe)) {
+                // Mot de passe hashé (bcrypt)
+                $passwordMatch = true;
+            } elseif ($admin->mot_de_passe === $req->validated('password')) {
+                // Ancien format non hashé (à supprimer en production)
+                $passwordMatch = true;
+            }
+            
+            if ($passwordMatch)
             {
                 Auth::guard('admin')->login($admin);
-                //session()->regenerate();
+                session()->regenerate();
                 return redirect()->route("dashboardAdmin");
             }
          }
         return redirect()->route("connexion")->with('error', "Identifiant incorrect");
     }
 
-    public function approuve( $req)
-    {
-        $candidate = Miss::findOrFail($req);
-        $candidate->statut="active";
-        $candidate->save();
-        Mail::to($candidate->email)->send(new CandidatureApprouvee($candidate));
-        return redirect()->route("dashboardAdmin")->with('success','Candidature acceptée');
+    public function logout(Request $request) : RedirectResponse {
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route("connexion")->with('success', "Déconnexion réussie");
     }
 
-      public function refuse( $req)
+    public function approuve($req)
     {
         $candidate = Miss::findOrFail($req);
-        $candidate->statut="reject";
+        $candidate->statut = "active";
         $candidate->save();
-        Mail::to($candidate->email)->send(new CandidatureRejetee($candidate));
-        return redirect()->route("dashboardAdmin")->with('success','Candidature rejetée');
+        
+        // Envoi email avec gestion d'erreur
+        try {
+            Mail::to($candidate->email)->send(new CandidatureApprouvee($candidate));
+            return redirect()->route("dashboardAdmin")->with('success', 'Candidature acceptée et email envoyé à ' . $candidate->prenom . ' ' . $candidate->nom);
+        } catch (\Throwable $e) {
+            logger()->error('Erreur envoi mail approbation: ' . $e->getMessage());
+            return redirect()->route("dashboardAdmin")->with('success', 'Candidature acceptée mais erreur lors de l\'envoi de l\'email');
+        }
+    }
+
+    public function refuse($req)
+    {
+        $candidate = Miss::findOrFail($req);
+        $candidate->statut = "reject";
+        $candidate->save();
+        
+        // Envoi email avec gestion d'erreur
+        try {
+            Mail::to($candidate->email)->send(new CandidatureRejetee($candidate));
+            return redirect()->route("dashboardAdmin")->with('success', 'Candidature rejetée et email envoyé à ' . $candidate->prenom . ' ' . $candidate->nom);
+        } catch (\Throwable $e) {
+            logger()->error('Erreur envoi mail rejet: ' . $e->getMessage());
+            return redirect()->route("dashboardAdmin")->with('success', 'Candidature rejetée mais erreur lors de l\'envoi de l\'email');
+        }
     }
 }

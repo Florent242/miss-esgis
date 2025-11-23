@@ -42,9 +42,13 @@ Route::middleware('auth:miss')->group(function () {
 Route::controller(AdminController::class)->group(function () {
     Route::get('/adminloginmaisjustedutextepourplusdesecurite', 'login')->name('connexion');
     Route::post('/adminloginmaisjustedutextepourplusdesecurite', 'checkLogin');
-    Route::get('/dashboardAdmin', 'dashboard')->name('dashboardAdmin');
-    Route::get('/approuve/{id}', 'approuve')->name('approuve');
-    Route::get('/refuse/{id}', 'refuse')->name('refuse');
+    Route::get('/dashboardAdmin', 'dashboard')->name('dashboardAdmin')->middleware('auth:admin');
+    Route::post('/admin/logout', 'logout')->name('admin.logout')->middleware('auth:admin');
+    Route::post('/admin/approve/{id}', 'approuve')->name('admin.approve')->middleware('auth:admin');
+    Route::delete('/admin/reject/{id}', 'refuse')->name('admin.reject')->middleware('auth:admin');
+    // Anciennes routes pour compatibilité
+    Route::get('/approuve/{id}', 'approuve')->name('approuve')->middleware('auth:admin');
+    Route::get('/refuse/{id}', 'refuse')->name('refuse')->middleware('auth:admin');
 });
 
 // Routes protégées candidates (Missdash)

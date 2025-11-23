@@ -10,7 +10,7 @@
     </a>
 
     <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-        <img src="{{ $miss->photo_principale }}" alt="{{ $miss->prenom }} {{ $miss->nom }}" class="w-full h-64 md:h-96 object-cover" />
+        <img src="{{ asset('storage/media/' . $miss->photo_principale) }}" alt="{{ $miss->prenom }} {{ $miss->nom }}" class="w-full h-64 md:h-96 object-cover" />
         <div class="p-6">
             <h1 class="text-3xl md:text-4xl font-bold text-text-gray-900">{{ $miss->prenom }} {{ $miss->nom }}</h1>
             <p class="text-text-gray-600 text-lg mt-1">{{ $miss->ville }}, {{ $miss->pays }} • {{ $miss->age }} ans</p>
@@ -31,7 +31,7 @@
             @if($photos->isNotEmpty())
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     @foreach($photos as $photo)
-                        <img src="{{ asset('media/'.basename($photo->url)) }}" alt="{{ $miss->prenom }} {{ $miss->nom }} photo" class="w-full h-full object-cover rounded-lg shadow-sm"/>
+                        <img src="{{ asset('storage/media/' . $photo->url) }}" alt="{{ $miss->prenom }} {{ $miss->nom }} photo" class="w-full h-full object-cover rounded-lg shadow-sm"/>
                     @endforeach
                 </div>
             @else
@@ -46,7 +46,7 @@
             <div class="aspect-w-16 aspect-h-9">
                 <iframe
                     class="w-full h-full rounded-lg object-cover"
-                    src="{{asset('media/'.basename($video->url))}}"
+                    src="{{asset('storage/media/' . $video->url)}}"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen

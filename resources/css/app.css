@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent horizontal scroll */
+@layer base {
+    html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+}
+
 /* Custom styles for radio button checked state */
 input[type="radio"]:checked + img + div {
     border-color: theme('colors.primary-pink');

@@ -1,14 +1,28 @@
 @component('mail::message')
-# Bonjour {{ $candidate->name }}
+# 🎉 Félicitations {{ $candidate->prenom }} {{ $candidate->nom }} !
 
-Votre candidature à l'élection miss ESGIS-Bénin 2025 a été approuvée !
+Nous avons le plaisir de vous informer que votre candidature à l'élection **Miss ESGIS {{ date('Y') }}** a été **approuvée** ! ✨
 
-Vous pouvez accédez à votre tableau de bord miss en suivant ce lien.
+Vous pouvez maintenant accéder à votre espace personnel pour :
+- 📸 Gérer vos photos et vidéos
+- 📊 Suivre vos votes en temps réel
+- ✏️ Modifier vos informations
+- 🏆 Voir votre classement
 
 @component('mail::button', ['url' => url('/connexion')])
-Se connecter
+🔐 Se connecter à mon espace
 @endcomponent
 
-Merci,  
-L'équipe Miss ESGIS-Bénin
+**Vos identifiants de connexion :**
+- Email : {{ $candidate->email }}
+- Mot de passe : Celui que vous avez choisi lors de l'inscription
+
+---
+
+💡 **Astuce :** Pensez à ajouter des photos de qualité et une vidéo de présentation pour maximiser vos chances !
+
+Bonne chance pour le concours ! 🌟
+
+Cordialement,  
+**L'équipe Miss ESGIS-Bénin**
 @endcomponent

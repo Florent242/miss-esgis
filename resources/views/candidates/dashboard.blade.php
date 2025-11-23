@@ -1,419 +1,489 @@
 @extends('layouts.base')
 @php
     $titre = 'Dashboard admin - Miss ESGIS ' . date('Y');
-
 @endphp
-@vite('resources/css/stylecandidate.css')
+
 @section('title', $titre)
 
 @section('content')
-    <div class="content">
-        <section class="entete">
-            <h1>Espace Miss - {{ $candidate->nom }} {{ $candidate->prenom }}</h1>
-            <p>
-                <span class="rang">#{{ $rang }} @if ($totalcandidates > 0)
-                        sur {{ $totalcandidates }}
-                    @endif
+<div class="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-pink-50 overflow-x-hidden">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- En-tête -->
+        <section class="text-center mb-8 animate-fade-in">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4 break-words">
+                Espace Miss - {{ $candidate->nom }} {{ $candidate->prenom }}
+            </h1>
+            <div class="flex justify-center gap-4 flex-wrap">
+                <span class="bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400 text-white px-6 py-2 rounded-full font-bold shadow-lg text-sm md:text-base">
+                    #{{ $rang }} @if ($totalcandidates > 0) sur {{ $totalcandidates }} @endif
                 </span>
-                <span class="votes"> {{ $candidate->votes_count }} @if ($candidate->votes_count > 1)
-                        votes
-                    @else
-                        vote
-                    @endif
+                <span class="bg-orange-400 text-white px-6 py-2 rounded-full font-bold shadow-lg text-sm md:text-base">
+                    {{ $candidate->votes_count }} {{ $candidate->votes_count > 1 ? 'votes' : 'vote' }}
                 </span>
-            </p>
+            </div>
         </section>
 
-        <section class="statistique">
-            <div id="bloc">
-                <div class="svgmiss">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-vote w-8 h-8 text-primary">
-                        <path d="m9 12 2 2 4-4"></path>
-                        <path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7Z"></path>
-                        <path d="M22 19H2"></path>
-                    </svg>
-                </div>
-                <div class="chiffre">
-                    <h3>{{ $candidate->votes_count }}</h3>
-                    <p>{{ $candidate->votes_count }} @if ($candidate->votes_count > 1)
-                            votes
-                        @else
-                            vote
-                        @endif
-                    </p>
+        <!-- Statistiques -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+            <!-- Votes -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Total Votes</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-pink-600 mt-2 break-words">{{ $candidate->votes_count }}</h3>
+                    </div>
+                    <div class="bg-pink-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-600 md:w-6 md:h-6">
+                            <path d="m9 12 2 2 4-4"></path>
+                            <path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7Z"></path>
+                            <path d="M22 19H2"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
-            <div id="bloc">
-                <div class=" svgmiss">
-                    <svg width="50px" height="50px" viewBox="0 0 1.8 1.8" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M0.65 1.706H0.15c-0.031 0 -0.056 -0.026 -0.056 -0.056v-0.45c0 -0.114 0.092 -0.206 0.206 -0.206h0.35c0.031 0 0.056 0.026 0.056 0.056v0.6c0 0.031 -0.026 0.056 -0.056 0.056m-0.444 -0.112h0.388v-0.487H0.3c-0.052 0 -0.094 0.042 -0.094 0.094z"
-                            fill="#000000" />
-                        <path
-                            d="M1.15 1.706H0.649c-0.031 0 -0.056 -0.026 -0.056 -0.056V0.9c0 -0.114 0.092 -0.206 0.206 -0.206h0.2c0.114 0 0.206 0.092 0.206 0.206v0.75c0 0.031 -0.025 0.056 -0.056 0.056m-0.443 -0.112h0.388V0.9c0 -0.052 -0.042 -0.094 -0.094 -0.094h-0.2c-0.052 0 -0.094 0.042 -0.094 0.094z"
-                            fill="#000000" />
-                        <path
-                            d="M1.65 1.706h-0.5c-0.031 0 -0.056 -0.026 -0.056 -0.056v-0.375c0 -0.031 0.026 -0.056 0.056 -0.056H1.5c0.114 0 0.206 0.092 0.206 0.206v0.225c0 0.031 -0.026 0.056 -0.056 0.056m-0.444 -0.112h0.388V1.425c0 -0.052 -0.042 -0.094 -0.094 -0.094h-0.294z"
-                            fill="#000000" />
-                        <path
-                            d="M1.027 0.626c-0.018 0 -0.041 -0.005 -0.066 -0.02L0.9 0.569l-0.061 0.036c-0.061 0.037 -0.102 0.015 -0.117 0.004s-0.047 -0.043 -0.032 -0.112l0.014 -0.062 -0.051 -0.051c-0.032 -0.032 -0.043 -0.069 -0.032 -0.103s0.042 -0.058 0.085 -0.066l0.065 -0.011 0.037 -0.073c0.041 -0.08 0.139 -0.08 0.178 0l0.037 0.073 0.065 0.011c0.043 0.007 0.075 0.032 0.085 0.066 0.011 0.035 -0.001 0.072 -0.032 0.103l-0.051 0.051 0.014 0.062c0.016 0.07 -0.017 0.102 -0.032 0.113 -0.007 0.006 -0.024 0.016 -0.049 0.016M0.9 0.456c0.018 0 0.036 0.004 0.051 0.013l0.042 0.025 -0.009 -0.041c-0.007 -0.032 0.004 -0.07 0.027 -0.093l0.038 -0.038 -0.047 -0.008c-0.03 -0.005 -0.059 -0.027 -0.073 -0.054L0.9 0.204l-0.028 0.056c-0.013 0.027 -0.043 0.049 -0.073 0.054l-0.047 0.007 0.038 0.038c0.023 0.023 0.034 0.061 0.027 0.093l-0.009 0.041 0.042 -0.025c0.014 -0.009 0.032 -0.013 0.05 -0.013"
-                            fill="#000000" />
-                    </svg>
-                </div>
-                <div class="chiffre">
-                    <h3>#{{ $rang }}</h3>
-                    <p>classement</p>
+
+            <!-- Classement -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Classement</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-orange-600 mt-2 break-words">#{{ $rang }}</h3>
+                    </div>
+                    <div class="bg-orange-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-orange-600 md:w-6 md:h-6">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
-            <div id="bloc">
-                <div class="svgmiss">
-                    <link rel="stylesheet"
-                        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&icon_names=photo" />
-                    <span class="material-symbols-outlined">photo</span>
-                </div>
-                <div class="chiffre">
-                    <h3>{{ $candidate->photos_count }}</h3>
-                    <p>{{ $candidate->photos_count }} @if ($candidate->photos_count > 1)
-                            photos
-                        @else
-                            photo
-                        @endif
-                    </p>
+
+            <!-- Photos -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Photos</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-pink-600 mt-2 break-words">{{ $candidate->photos_count }}</h3>
+                    </div>
+                    <div class="bg-pink-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-600 md:w-6 md:h-6">
+                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                            <circle cx="9" cy="9" r="2"/>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
-            <div id="bloc">
-                <div class="svgmiss">
-                    <link rel="stylesheet"
-                        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&icon_names=video_library" />
-                    <span class="material-symbols-outlined">video_library</span>
-                </div>
-                <div class="chiffre">
-                    <h3>{{ $candidate->videos_count }}</h3>
-                    <p>{{ $candidate->videos_count }} @if ($candidate->videos_count > 1)
-                            videos
-                        @else
-                            video
-                        @endif
-                    </p>
+
+            <!-- Vidéos -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Vidéos</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-orange-600 mt-2 break-words">{{ $candidate->videos_count }}</h3>
+                    </div>
+                    <div class="bg-orange-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-600 md:w-6 md:h-6">
+                            <path d="m22 8-6 4 6 4V8Z"/>
+                            <rect width="14" height="12" x="2" y="6" rx="2" ry="2"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </section>
-        <div class="infopersomiss">
 
-
+        <!-- Formulaires -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-8 w-full">
             @if ($candidate->photos_count < 4 || $candidate->videos_count == 0)
-                <section class="detail">
-                    <form action="/addmedia" method="post" enctype="multipart/form-data">
-                        <h2>Gerer vos medias</h2>
-                        @csrf
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 w-full">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 break-words">Gérer vos médias</h2>
+                <form action="/addmedia" method="post" enctype="multipart/form-data" class="space-y-4 md:space-y-6">
+                    @csrf
+                    
+                    @if ($candidate->photos_count < 4)
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Ajouter une photo</h3>
+                        <label for="photo" class="flex items-center justify-center w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-lg cursor-pointer hover:from-pink-600 hover:to-orange-500 transition-all">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <span id="spanphoto">Sélectionner une photo</span>
+                        </label>
+                        <input type="file" name="photo" id="photo" accept="image/*" class="hidden">
+                        <div id="photo-preview" class="mt-4 hidden">
+                            <img id="photo-preview-img" src="" alt="Aperçu photo" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                        </div>
+                        <p id="photoerror" class="text-red-500 text-sm mt-2">
+                            @error('photo') {{ $message }} @enderror
+                        </p>
+                    </div>
+                    @endif
 
-                        @if ($candidate->photos_count < 4)
-                            <div>
-                                <h3>Ajouter une photo</h3>
-                                <div class="cadreinput">
-                                    <label for="photo">Choisir une photo</label>
-                                    <input type="file" name="photo" id="photo" accept="image/*">
-                                    <span id="spanphoto">Selectionner une photo</span>
-                                </div>
-                                <div id="photoerror" class="error">
-                                    @error('photo')
-                                        {{ $message }}
-                                    @enderror
-                                </div>
-                            </div>
-                        @endif
-                        @if ($candidate->videos_count == 0)
-                            <div>
-                                <h3>Ajouter une video</h3>
-                                <div class="cadreinput">
-                                    <label for="video">Choisir une video</label>
-                                    <input type="file" name="video" id="video" accept="video/*">
-                                    <span id="spanvideo">Selectionner une video</span>
-                                </div>
-                                <div id="videoerror" class="error">
-                                    @error('video')
-                                        {{ $message }}
-                                    @enderror
-                                </div>
-                            </div>
-                        @endif
-                        <button type="submit" id="soumis">Ajouter</button>
-                    </form>
-                </section>
+                    @if ($candidate->videos_count == 0)
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Ajouter une vidéo</h3>
+                        <label for="video" class="flex items-center justify-center w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-lg cursor-pointer hover:from-pink-600 hover:to-orange-500 transition-all">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <span id="spanvideo">Sélectionner une vidéo</span>
+                        </label>
+                        <input type="file" name="video" id="video" accept="video/*" class="hidden">
+                        <div id="video-preview" class="mt-4 hidden">
+                            <video id="video-preview-player" controls class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                                <source id="video-preview-source" src="" type="">
+                            </video>
+                        </div>
+                        <p id="videoerror" class="text-red-500 text-sm mt-2">
+                            @error('video') {{ $message }} @enderror
+                        </p>
+                    </div>
+                    @endif
+
+                    <button type="submit" id="soumis" class="w-full bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+                        Ajouter
+                    </button>
+                </form>
+            </div>
             @endif
 
-
-
-            <section class="details">
-                <form action="/updateinfo" method="post">
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 w-full">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 break-words">Informations du profil</h2>
+                <form action="/updateinfo" method="post" class="space-y-4">
                     @csrf
-                    <h2>Informations du profil</h2>
                     <div>
-                        <label for="nom">Nom</label>
-                        <input type="text" name="nom" id="nom"
-                            value="{{ @old('nom', $candidate->nom ?? '') }}">
-                        <div class="error">
-                            @error('nom')
-                                {{ $message }}
-                            @enderror
-                        </div>
+                        <label for="nom" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                        <input type="text" name="nom" id="nom" value="{{ @old('nom', $candidate->nom ?? '') }}" class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm md:text-base">
+                        @error('nom') <p class="text-red-500 text-xs md:text-sm mt-1 break-words">{{ $message }}</p> @enderror
                     </div>
+
                     <div>
-                        <label for="prenom">Prenom</label>
-                        <input type="text" name="prenom" id="prenom"
-                            value="{{ @old('prenom', $candidate->prenom ?? '') }}">
-                        <div class="error">
-                            @error('prenom')
-                                {{ $message }}
-                            @enderror
-                        </div>
+                        <label for="prenom" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                        <input type="text" name="prenom" id="prenom" value="{{ @old('prenom', $candidate->prenom ?? '') }}" class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm md:text-base">
+                        @error('prenom') <p class="text-red-500 text-xs md:text-sm mt-1 break-words">{{ $message }}</p> @enderror
                     </div>
+
                     <div>
-                        <label for="ville">Ville</label>
-                        <input type="text" name="ville" id="ville"
-                            value="{{ @old('ville', $candidate->pays ?? '') }}">
-                        @error('ville')
-                            {{ $message }}
-                        @enderror
+                        <label for="ville" class="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+                        <input type="text" name="ville" id="ville" value="{{ @old('ville', $candidate->pays ?? '') }}" class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm md:text-base">
+                        @error('ville') <p class="text-red-500 text-xs md:text-sm mt-1 break-words">{{ $message }}</p> @enderror
                     </div>
+
                     <div>
-                        <label for="bio">Biographie</label>
-                        <textarea name="bio" id="bio">{{ @old('bio', $candidate->bio ?? '') }}</textarea>
-                        @error('bio')
-                            {{ $message }}
-                        @enderror
+                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Biographie</label>
+                        <textarea name="bio" id="bio" rows="4" class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm md:text-base">{{ @old('bio', $candidate->bio ?? '') }}</textarea>
+                        @error('bio') <p class="text-red-500 text-xs md:text-sm mt-1 break-words">{{ $message }}</p> @enderror
                     </div>
-                    <!--<div>
-                                    <label for="mail">Mail</label>
-                                    <input type="text" name="mail" id="mail" value="{{ @old('mail', $candidate->email ?? '') }}">
-                                    @error('mail')
-        {{ $message }}
-    @enderror
-                                </div>-->
-                    <button type="submit" id="soumis">Sauvegarder les modifications</button>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400 text-white py-2 md:py-3 rounded-lg font-semibold hover:shadow-lg transition-all text-sm md:text-base">
+                        Sauvegarder les modifications
+                    </button>
                 </form>
-            </section>
+            </div>
         </div>
 
-        <section class="medias">
-            <div class="gallerie">
-                <h2>Photo de profil</h2>
-
-                <div class="image">
-                    <img id="photprofil" src="{{ asset('storage/media/' . basename($candidate->photo_principale)) }}"
-                        alt="photo de {{ $candidate->nom }} {{ $candidate->prenom }}">
-                    <div class="modifbtn">
-                        <button id="open-modalphoto" class="modifiermedia"
-                            data-miss-id="{{ $candidate->id }}">Modifier</button>
+        <!-- Galeries médias -->
+        <div class="space-y-4 md:space-y-6 w-full">
+            <!-- Photo de profil -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 w-full">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 break-words">Photo de profil</h2>
+                <div class="flex flex-col items-center">
+                    <div class="relative group w-full max-w-md">
+                        <img id="photprofil" src="{{ asset('storage/media/' . $candidate->photo_principale) }}" alt="Photo de {{ $candidate->nom }} {{ $candidate->prenom }}" class="w-full h-auto rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105 object-cover max-h-96">
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-300"></div>
                     </div>
+                    <button id="open-modalphoto" class="mt-4 md:mt-6 bg-gradient-to-r from-pink-500 to-orange-400 text-white px-6 md:px-8 py-2 md:py-3 rounded-lg font-semibold hover:shadow-lg transition-all text-sm md:text-base" data-miss-id="{{ $candidate->id }}">
+                        Modifier la photo
+                    </button>
                 </div>
             </div>
 
-            <div class="gallerie">
-                <h2>Galerie photos</h2>
-                <div class="photos">
-                    @if (count($medias) != 0)
+            <!-- Galerie photos -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 w-full overflow-hidden">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 break-words">Galerie photos</h2>
+                @if (count($medias) != 0 && $medias->contains('type', 'photo'))
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full">
                         @foreach ($medias as $media)
                             @if ($media->type === 'photo')
-                                <div class="image">
-                                    <img src="{{ asset('media/' . basename($media->url)) }}"
-                                        alt="photo de {{ $candidate->nom }} {{ $candidate->prenom }}">
-                                    <div class="modifbtn">
-                                        <button id="open-modalphoto" class="modifiermedia"
-                                            data-media-id="{{ $media->id }}">Modifier</button>
-                                    </div>
+                                <div class="relative group w-full">
+                                    <img src="{{ asset('storage/media/' . $media->url) }}" alt="Photo de {{ $candidate->nom }} {{ $candidate->prenom }}" class="w-full h-48 md:h-64 object-cover rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-300"></div>
+                                    <button id="open-modalphoto" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-pink-500 to-orange-400 text-white px-4 md:px-6 py-1.5 md:py-2 rounded-lg font-semibold opacity-0 group-hover:opacity-100 transition-all text-xs md:text-sm whitespace-nowrap" data-media-id="{{ $media->id }}">
+                                        Modifier
+                                    </button>
                                 </div>
                             @endif
                         @endforeach
-                    @else
-                        <h2>Vous n'avez pas encore photo</h2>
-                    @endif
-                </div>
-            </div>
-
-            <div class="presentationvid">
-                <h2>Video de presentation</h2>
-                <div class="video">
-                    @if ($medias->contains('type', 'video'))
-                        @foreach ($medias as $media)
-                            @if ($media->type === 'video')
-                                <video controls>
-                                    <source src="{{ asset('media/' . basename($media->url)) }}"
-                                        type="video/{{ pathinfo(basename($media->url), PATHINFO_EXTENSION) }}">
-                                    Votre navigateur ne prend pas en charge la lecture de video
-                                </video>
-                                <div class="modifbtn">
-                                    <button id="open-modal" class="modifiermedia"
-                                        data-media-id="{{ $media->id }}">Modifier</button>
-                                </div>
-                            @endif
-                        @endforeach
-                    @else
-                        <h2>Vous n'avez pas encore de video de présentation</h2>
-
-                    @endif
-                </div>
-            </div>
-        </section>
-
-        <div id="modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Ajouter une video</h2>
-                <form id="photo-form" action="/modifiermedia" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div id="infomedia"></div>
-                    <input type="file" id="videomod" name="video" accept="video/*">
-                    <div class="modalviderror"></div>
-                    <button type="submit" id="connexion">Envoyer</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="modalphoto" class="modalphoto">
-            <div class="modal-contentphoto">
-                <span class="close">&times;</span>
-                <h2>Modifier la photo</h2>
-                <form id="photo-form2" action="/modifiermedia" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div id="photoinfo">
-
                     </div>
-                    <input type="file" id="modphoto" name="photo" accept="photo/*">
-                    <div class="modalphterror"></div>
-                    <button type="submit" id="connexion">Envoyer</button>
-                </form>
+                @else
+                    <p class="text-gray-500 text-center py-8 text-sm md:text-base">Vous n'avez pas encore de photos</p>
+                @endif
+            </div>
+
+            <!-- Vidéo de présentation -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 w-full overflow-hidden">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 break-words">Vidéo de présentation</h2>
+                @if ($medias->contains('type', 'video'))
+                    @foreach ($medias as $media)
+                        @if ($media->type === 'video')
+                            <div class="flex flex-col items-center">
+                                <video controls class="w-full max-w-2xl h-auto rounded-lg shadow-md">
+                                    <source src="{{ asset('storage/media/' . $media->url) }}" type="video/{{ pathinfo($media->url, PATHINFO_EXTENSION) }}">
+                                    Votre navigateur ne prend pas en charge la lecture de vidéo
+                                </video>
+                                <button id="open-modal" class="mt-4 md:mt-6 bg-gradient-to-r from-pink-500 to-orange-400 text-white px-6 md:px-8 py-2 md:py-3 rounded-lg font-semibold hover:shadow-lg transition-all text-sm md:text-base" data-media-id="{{ $media->id }}">
+                                    Modifier la vidéo
+                                </button>
+                            </div>
+                        @endif
+                    @endforeach
+                @else
+                    <p class="text-gray-500 text-center py-8 text-sm md:text-base">Vous n'avez pas encore de vidéo de présentation</p>
+                @endif
             </div>
         </div>
-
     </div>
-    <script>
-        const modal = document.getElementById('modal');
-        const openModalButton = document.getElementById("open-modal");
-        const closeButton = document.getElementsByClassName('close')[0];
-        const infomedia = document.getElementById("infomedia")
+</div>
 
-        openModalButton?.addEventListener("click", function() {
-            modal.style.display = 'block';
-            const mediaid = openModalButton.getAttribute("data-media-id")
-            infomedia.innerHTML = `<input type="hidden" name="id" value="${mediaid}">`;
-        });
+<!-- Modal Vidéo -->
+<div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative animate-fade-in">
+        <button class="close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Modifier la vidéo</h2>
+        <form id="photo-form" action="/modifiermedia" method="post" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            <div id="infomedia"></div>
+            <label for="videomod" class="flex items-center justify-center w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-lg cursor-pointer hover:from-pink-600 hover:to-orange-500 transition-all">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <span id="videomod-label">Choisir une vidéo</span>
+            </label>
+            <input type="file" id="videomod" name="video" accept="video/*" class="hidden">
+            <div id="videomod-preview" class="hidden mt-4">
+                <video id="videomod-preview-player" controls class="w-full rounded-lg shadow-md">
+                    <source id="videomod-preview-source" src="" type="">
+                </video>
+            </div>
+            <div class="modalviderror text-red-500 text-sm"></div>
+            <button type="submit" class="w-full bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+                Envoyer
+            </button>
+        </form>
+    </div>
+</div>
 
-        closeButton?.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
+<!-- Modal Photo -->
+<div id="modalphoto" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative animate-fade-in">
+        <button class="close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Modifier la photo</h2>
+        <form id="photo-form2" action="/modifiermedia" method="post" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            <div id="photoinfo"></div>
+            <label for="modphoto" class="flex items-center justify-center w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-lg cursor-pointer hover:from-pink-600 hover:to-orange-500 transition-all">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <span id="modphoto-label">Choisir une photo</span>
+            </label>
+            <input type="file" id="modphoto" name="photo" accept="image/*" class="hidden">
+            <div id="modphoto-preview" class="hidden mt-4">
+                <img id="modphoto-preview-img" src="" alt="Aperçu" class="w-full rounded-lg shadow-md">
+            </div>
+            <div class="modalphterror text-red-500 text-sm"></div>
+            <button type="submit" class="w-full bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
+                Envoyer
+            </button>
+        </form>
+    </div>
+</div>
 
-        window?.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
+<script>
+    // Modal vidéo
+    const modal = document.getElementById('modal');
+    const openModalButton = document.getElementById("open-modal");
+    const closeButtons = document.getElementsByClassName('close');
+    const infomedia = document.getElementById("infomedia");
+
+    openModalButton?.addEventListener("click", function() {
+        modal.classList.remove('hidden');
+        const mediaid = openModalButton.getAttribute("data-media-id");
+        infomedia.innerHTML = `<input type="hidden" name="id" value="${mediaid}">`;
+    });
+
+    // Modal photo
+    const modalphoto = document.getElementById('modalphoto');
+    const openmodalphoto = document.querySelectorAll("#open-modalphoto");
+    const photoinfo = document.getElementById("photoinfo");
+
+    openmodalphoto.forEach(opmodalphoto => {
+        opmodalphoto?.addEventListener("click", function() {
+            modalphoto.classList.remove('hidden');
+            let photoid = opmodalphoto.getAttribute("data-media-id");
+            if (photoid != null) {
+                photoinfo.innerHTML = `<input type="hidden" name="id" value="${photoid}">`;
+            } else {
+                photoid = opmodalphoto.getAttribute("data-miss-id");
+                photoinfo.innerHTML = `<input type="hidden" name="idmiss" value="${photoid}">`;
             }
         });
+    });
 
-
-        const photoForm = document.getElementById('photo-form');
-        photoForm?.addEventListener('submit', (event) => {
-            const videoInput = document.getElementById('videomod');
-            if (videoInput.files.length == 0) {
-                event.preventDefault();
-                document.querySelector(".modalviderror").innerText = "Selectionée une vidéo"
-            }
+    // Fermeture des modals
+    Array.from(closeButtons).forEach(button => {
+        button?.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modalphoto.classList.add('hidden');
         });
+    });
 
-        //photo modal
-        const modalphoto = document.getElementById('modalphoto');
-        const openmodalphoto = document.querySelectorAll("#open-modalphoto")
-        const closeButton2 = document.getElementsByClassName('close')[1];
-        const photoinfo = document.getElementById("photoinfo")
-        openmodalphoto.forEach(opmodalphoto => {
-            opmodalphoto?.addEventListener("click", function() {
-                modalphoto.style.display = 'block';
-
-                let photoid = opmodalphoto.getAttribute("data-media-id")
-                if (photoid != null)
-                    photoinfo.innerHTML = `<input type="hidden" name="id" value="${photoid}">`;
-                else {
-                    photoid = opmodalphoto.getAttribute("data-miss-id")
-                    photoinfo.innerHTML = `<input type="hidden" name="idmiss" value="${photoid}">`;
-                }
-            });
-        })
-        closeButton2?.addEventListener('click', () => {
-            modalphoto.style.display = 'none';
-        });
-
-        window?.addEventListener('click', (event) => {
-            if (event.target === modalphoto) {
-                modalphoto.style.display = 'none';
-            }
-        });
-
-
-        const photoForm2 = document.getElementById('photo-form2');
-        photoForm2?.addEventListener('submit', (event) => {
-            const photoInput = document.getElementById('modphoto');
-            if (photoInput.files.length == 0) {
-                event.preventDefault();
-                document.querySelector(".modalphterror").innerText = "Selectionée une photo"
-            }
-        });
-
-        let button = document.getElementById("soumis")
-        let photo = document.getElementById("photo")
-        let video = document.getElementById("video")
-        let spanvideo = document.getElementById("spanvideo")
-        let spanphoto = document.getElementById("spanphoto")
-        let videoerror = document.getElementById("videoerror")
-        let photoerror = document.getElementById("photoerror")
-        if (button) {
-            button?.addEventListener("click", function(e) {
-
-                if ((photo && photo.files.length == 0) && (video && video.files.length == 0)) {
-                    e.preventDefault()
-
-                    if ((photo && photo.files.length == 0)) {
-
-                        if (photo && photo.files.length == 0) {
-                            photoerror.innerText = "Selectionnez une photo"
-                        }
-
-                    }
-
-                    if ((video && video.files.length == 0)) {
-
-                        if (video && video.files.length == 0) {
-                            videoerror.innerText = "Selectionnez une video"
-                        }
-                    }
-                }
-
-
-            })
+    window?.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.classList.add('hidden');
         }
-        if (photo) {
-            photo?.addEventListener('change', () => {
-                if (photo && photo.files.length > 0) {
-                    spanphoto.innerText = "Photo selectionnée"
-                    photoerror.innerText = ""
-                } else {
-                    spanphoto.innerText = "Selectionner une photo"
-                }
-            })
+        if (event.target === modalphoto) {
+            modalphoto.classList.add('hidden');
         }
+    });
 
-        if (video) {
-            video?.addEventListener('change', () => {
-
-                if (video && video.files.length > 0) {
-                    spanvideo.innerText = "Video selectionnée"
-                    videoerror.innerText = ""
-                } else {
-                    spanvideo.innerText = "Selectionner une video"
-                }
-            })
+    // Validation formulaire vidéo
+    const photoForm = document.getElementById('photo-form');
+    photoForm?.addEventListener('submit', (event) => {
+        const videoInput = document.getElementById('videomod');
+        if (videoInput.files.length == 0) {
+            event.preventDefault();
+            document.querySelector(".modalviderror").innerText = "Sélectionnez une vidéo";
         }
-    </script>
+    });
+
+    // Validation formulaire photo
+    const photoForm2 = document.getElementById('photo-form2');
+    photoForm2?.addEventListener('submit', (event) => {
+        const photoInput = document.getElementById('modphoto');
+        if (photoInput.files.length == 0) {
+            event.preventDefault();
+            document.querySelector(".modalphterror").innerText = "Sélectionnez une photo";
+        }
+    });
+
+    // Gestion upload médias
+    let button = document.getElementById("soumis");
+    let photo = document.getElementById("photo");
+    let video = document.getElementById("video");
+    let spanvideo = document.getElementById("spanvideo");
+    let spanphoto = document.getElementById("spanphoto");
+    let videoerror = document.getElementById("videoerror");
+    let photoerror = document.getElementById("photoerror");
+
+    if (button) {
+        button?.addEventListener("click", function(e) {
+            if ((photo && photo.files.length == 0) && (video && video.files.length == 0)) {
+                e.preventDefault();
+                if (photo && photo.files.length == 0) {
+                    photoerror.innerText = "Sélectionnez une photo";
+                }
+                if (video && video.files.length == 0) {
+                    videoerror.innerText = "Sélectionnez une vidéo";
+                }
+            }
+        });
+    }
+
+    if (photo) {
+        photo?.addEventListener('change', () => {
+            if (photo && photo.files.length > 0) {
+                spanphoto.innerText = "Photo sélectionnée ✓";
+                spanphoto.classList.add('text-green-600', 'font-semibold');
+                photoerror.innerText = "";
+                
+                // Afficher l'aperçu de l'image
+                const file = photo.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewContainer = document.getElementById('photo-preview');
+                    const previewImg = document.getElementById('photo-preview-img');
+                    previewImg.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                spanphoto.innerText = "Sélectionner une photo";
+                spanphoto.classList.remove('text-green-600', 'font-semibold');
+                document.getElementById('photo-preview').classList.add('hidden');
+            }
+        });
+    }
+
+    if (video) {
+        video?.addEventListener('change', () => {
+            if (video && video.files.length > 0) {
+                spanvideo.innerText = "Vidéo sélectionnée ✓";
+                spanvideo.classList.add('text-green-600', 'font-semibold');
+                videoerror.innerText = "";
+                
+                // Afficher l'aperçu de la vidéo
+                const file = video.files[0];
+                const previewContainer = document.getElementById('video-preview');
+                const previewPlayer = document.getElementById('video-preview-player');
+                const previewSource = document.getElementById('video-preview-source');
+                
+                const fileURL = URL.createObjectURL(file);
+                previewSource.src = fileURL;
+                previewSource.type = file.type;
+                previewPlayer.load();
+                previewContainer.classList.remove('hidden');
+            } else {
+                spanvideo.innerText = "Sélectionner une vidéo";
+                spanvideo.classList.remove('text-green-600', 'font-semibold');
+                document.getElementById('video-preview').classList.add('hidden');
+            }
+        });
+    }
+
+    // Animation upload modal
+    const videomodInput = document.getElementById('videomod');
+    const modphotoInput = document.getElementById('modphoto');
+    
+    videomodInput?.addEventListener('change', function() {
+        const label = document.getElementById('videomod-label');
+        if(this.files.length > 0) {
+            label.innerHTML = `Vidéo sélectionnée ✓`;
+            label.parentElement.classList.add('bg-green-500');
+            label.parentElement.classList.remove('bg-gradient-to-r', 'from-pink-500', 'to-orange-400');
+            
+            // Afficher aperçu vidéo
+            const file = this.files[0];
+            const previewContainer = document.getElementById('videomod-preview');
+            const previewPlayer = document.getElementById('videomod-preview-player');
+            const previewSource = document.getElementById('videomod-preview-source');
+            
+            const fileURL = URL.createObjectURL(file);
+            previewSource.src = fileURL;
+            previewSource.type = file.type;
+            previewPlayer.load();
+            previewContainer.classList.remove('hidden');
+        }
+    });
+
+    modphotoInput?.addEventListener('change', function() {
+        const label = document.getElementById('modphoto-label');
+        if(this.files.length > 0) {
+            label.innerHTML = `Photo sélectionnée ✓`;
+            label.parentElement.classList.add('bg-green-500');
+            label.parentElement.classList.remove('bg-gradient-to-r', 'from-pink-500', 'to-orange-400');
+            
+            // Afficher aperçu photo
+            const file = this.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewContainer = document.getElementById('modphoto-preview');
+                const previewImg = document.getElementById('modphoto-preview-img');
+                previewImg.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 
 @endsection

@@ -21,7 +21,7 @@
         <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 max-w-2xl mx-auto">
             <!-- Candidate Info Card -->
             <div class="flex items-center space-x-4 p-4 bg-pink-50 rounded-lg mb-6">
-                <img src="{{ $miss->photo_principale }}" alt="{{ $miss->prenom }} {{ $miss->nom }}"
+                <img src="{{ asset('storage/media/' . $miss->photo_principale) }}" alt="{{ $miss->prenom }} {{ $miss->nom }}"
                     class="w-16 h-16 rounded-full object-cover shadow-sm" />
                 <div class="flex-grow">
                     <h3 class="text-xl font-semibold text-text-gray-800">{{ $miss->prenom }} {{ $miss->nom }}</h3>
