@@ -13,12 +13,14 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('admins')->insert([
-            'nom' => 'Super',
-            'email' => 'r3In3AdmIn@r3in3E5gI5.C0m',
-            'mot_de_passe' => Hash::make("A@.2dmIn2347@R3Ine#VI@nn3y.67.@"), // change le mot de passe après
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        DB::table('admins')->updateOrInsert(
+            ['email' => 'r3In3AdmIn@r3in3E5gI5.C0m'],
+            [
+                'nom' => 'Super',
+                'mot_de_passe' => Hash::make("A@.2dmIn2347@R3Ine#VI@nn3y.67.@"),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
 }
