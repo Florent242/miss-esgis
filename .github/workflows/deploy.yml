@@ -25,19 +25,16 @@ jobs:
             # Mettre l'application en mode maintenance
             php artisan down || true
             
-            # Sauvegarder les changements locaux si nécessaire
-            echo "Vérification des changements locaux..."
-            if ! git diff-index --quiet HEAD --; then
-              echo "Changements locaux détectés, création d'un commit de sauvegarde..."
-              git config user.email "deploy@miss-esgis.com"
-              git config user.name "Auto Deploy"
-              git add .
-              git commit -m "Auto-save before deploy $(date '+%Y-%m-%d %H:%M:%S')" || true
-            fi
+            # Forcer la récupération depuis GitHub (écraser les changements locaux)
+            echo "Récupération forcée depuis GitHub..."
+            git fetch origin main
             
-            # Récupérer les dernières modifications
-            echo "Récupération des modifications..."
-            git pull origin main --rebase || git pull origin main
+            # Réinitialiser complètement au dernier commit de origin/main
+            echo "Écrasement des changements locaux..."
+            git reset --hard origin/main
+            
+            # Nettoyer les fichiers non trackés
+            git clean -fd
             
             # Installer/mettre à jour les dépendances Composer
             echo "Installation des dépendances PHP..."
