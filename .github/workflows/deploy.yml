@@ -63,12 +63,14 @@ jobs:
             npm ci --prefer-offline --no-audit
             npm run build
             
-            # Nettoyer le cache
-            echo "Nettoyage du cache..."
-            php artisan config:clear
+            # Nettoyer le cache intégralement
+            echo "Nettoyage intégral du cache Laravel..."
             php artisan cache:clear
+            php artisan config:clear
             php artisan route:clear
             php artisan view:clear
+            php artisan event:clear
+            php artisan optimize:clear
             
             # Exécuter les migrations (sans fresh pour préserver les données)
             echo "Exécution des migrations..."
