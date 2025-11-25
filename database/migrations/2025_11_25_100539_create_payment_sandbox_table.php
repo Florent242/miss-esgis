@@ -14,15 +14,14 @@ return new class extends Migration
         Schema::create('payment_sandbox', function (Blueprint $table) {
             $table->id();
             $table->string('reference')->unique();
+            $table->string('external_reference')->nullable()->comment('MTN Transaction ID');
             $table->foreignId('miss_id')->constrained('misses')->onDelete('cascade');
             $table->enum('operator', ['mtn', 'moov', 'celtiis']);
             $table->string('phone_number', 20);
             $table->decimal('amount', 10, 2);
             $table->integer('vote_count');
             $table->enum('status', ['pending', 'confirmed', 'failed', 'expired'])->default('pending');
-            $table->string('momo_number', 20)->comment('Numéro MoMo de réception');
-            $table->text('sms_content')->nullable();
-            $table->timestamp('sms_received_at')->nullable();
+            $table->text('provider_response')->nullable()->comment('Réponse de l\'API MTN/Moov/Celtiis');
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->timestamp('expires_at')->nullable();
