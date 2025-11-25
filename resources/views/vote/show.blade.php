@@ -52,7 +52,7 @@
 
                     <div class="flex justify-between font-bold text-lg border-t pt-2 mt-2">
                         <span>Total à payer</span>
-                        <span id="total-price">104 FCFA</span>
+                        <span id="total-price">100 FCFA</span>
                     </div>
                 </div>
             </div>
