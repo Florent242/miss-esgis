@@ -203,18 +203,15 @@ let expiresAt = null;
 const operatorConfig = {
     mtn: {
         name: 'MTN Mobile Money',
-        color: 'yellow',
-        ussd: '*155#'
+        color: 'yellow'
     },
     moov: {
         name: 'Moov Money (Flooz)',
-        color: 'blue',
-        ussd: '*155#'
+        color: 'blue'
     },
     celtiis: {
         name: 'Celtiis Cash',
-        color: 'orange',
-        ussd: '*124#'
+        color: 'orange'
     }
 };
 
@@ -245,7 +242,6 @@ function selectOperator(operator) {
             <img src="/images/operators/${operator}.png" alt="${config.name}" class="w-12 h-12 object-contain">
             <div>
                 <p class="font-bold text-gray-800">${config.name}</p>
-                <p class="text-xs text-gray-500">Code USSD : ${config.ussd}</p>
             </div>
         </div>
     `;

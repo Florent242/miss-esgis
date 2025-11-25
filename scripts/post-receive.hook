@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Post-receive hook pour déploiement automatique
+# À placer sur le serveur dans : /path/to/repo.git/hooks/post-receive
+
+while read oldrev newrev ref
+do
+    branch=$(git rev-parse --symbolic --abbrev-ref $ref)
+    
+    if [ "$branch" == "main" ] || [ "$branch" == "master" ]; then
+        echo "🚀 Déploiement de la branche $branch..."
+        
+        # Chemin vers votre application
+        APP_DIR="/var/www/reine-esgis.com"
+        
+        cd $APP_DIR
+        
+        # Pull des changements
+        git fetch --all
+        git reset --hard origin/$branch
+        
+        # Vérifier si des fichiers de sandbox ont été modifiés
+        if git diff --name-only $oldrev $newrev | grep -E "(SandboxPayment|MoMoPayment|payment-modal|deploy_sandbox)" > /dev/null; then
+            echo "📦 Mise à jour de la sandbox détectée"
+            
+            # Exécuter le script de déploiement seulement si configuré
+            if [ -f "scripts/deploy_sandbox.sh" ] && grep -q "MTN_MOMO_API_USER" .env; then
+                bash scripts/deploy_sandbox.sh
+            fi
+        fi
+        
+        # Redémarrage services (optionnel)
+        # sudo systemctl reload php8.2-fpm
+        # sudo systemctl reload nginx
+        
+        echo "✅ Déploiement terminé"
+    fi
+done
