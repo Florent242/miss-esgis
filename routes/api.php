@@ -16,7 +16,14 @@ Route::get('/candidate/{id}', function ($id) {
     return response()->json($candidateData);
 });
 
-// Sandbox Payment Routes
+// Payment Routes (Production & Sandbox partagent le même contrôleur)
+Route::prefix('payment')->group(function () {
+    Route::post('/initiate', [SandboxPaymentController::class, 'initiate']);
+    Route::post('/status', [SandboxPaymentController::class, 'checkStatus']);
+    Route::get('/operators', [SandboxPaymentController::class, 'getOperators']);
+});
+
+// Sandbox Payment Routes (legacy - pour compatibilité)
 Route::prefix('sandbox')->group(function () {
     Route::post('/initiate', [SandboxPaymentController::class, 'initiate']);
     Route::post('/status', [SandboxPaymentController::class, 'checkStatus']);

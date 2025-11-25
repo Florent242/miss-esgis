@@ -72,7 +72,7 @@
     </div>
 
     <!-- Include Sandbox Modal -->
-    @include('components.sandbox.payment-modal')
+    @include('components.payment-modal')
 @endsection
 
 @push('scripts')

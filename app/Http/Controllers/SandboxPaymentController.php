@@ -37,8 +37,8 @@ class SandboxPaymentController extends Controller
             return response()->json(['error' => 'Cette candidate ne peut pas recevoir de votes'], 400);
         }
 
-        // Générer une référence unique
-        $reference = strtoupper(Str::uuid()->toString());
+        // Générer une référence unique (lowercase pour MTN API)
+        $reference = strtolower(Str::uuid()->toString());
 
         // Client paie toujours 100 FCFA par vote (aucun frais supplémentaire)
         $clientAmount = $validated['amount'];
@@ -106,7 +106,9 @@ class SandboxPaymentController extends Controller
         if ($payment->status === 'pending') {
             $apiStatus = $this->momoService->checkStatus($payment->operator, $payment->reference);
             
-            if (isset($apiStatus['status']) && $apiStatus['status'] === 'successful') {
+            // Ne confirmer automatiquement QUE en production (pas en sandbox)
+            if (env('MTN_MOMO_ENVIRONMENT') === 'production' && 
+                isset($apiStatus['status']) && $apiStatus['status'] === 'successful') {
                 // Confirmer le paiement
                 $this->confirmPayment($payment);
                 $payment->refresh();
@@ -133,7 +135,6 @@ class SandboxPaymentController extends Controller
             DB::beginTransaction();
 
             $payment->status = 'confirmed';
-            $payment->sms_received_at = now();
             $payment->save();
 
             // Créer la transaction officielle

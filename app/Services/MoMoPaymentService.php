@@ -10,12 +10,22 @@ class MoMoPaymentService
     private function getBaseUrl($operator)
     {
         $urls = [
-            'mtn' => env('MTN_MOMO_ENVIRONMENT') === 'sandbox' 
-                ? 'https://sandbox.momodeveloper.mtn.com' 
-                : 'https://proxy.momoapi.mtn.com',
+            'mtn' => env('MTN_MOMO_ENVIRONMENT') === 'production' 
+                ? 'https://proxy.momoapi.mtn.com' 
+                : 'https://sandbox.momodeveloper.mtn.com',
             'moov' => 'https://api.moov-africa.bj',
         ];
         return $urls[$operator] ?? null;
+    }
+
+    private function getCurrency($operator, $environment)
+    {
+        // Pour MTN: EUR en sandbox, XOF en production
+        if ($operator === 'mtn') {
+            return $environment === 'production' ? 'XOF' : 'EUR';
+        }
+        // Autres opérateurs utilisent toujours XOF
+        return 'XOF';
     }
 
     public function requestToPay($operator, $phoneNumber, $amount, $reference, $externalId = null)
@@ -37,51 +47,90 @@ class MoMoPaymentService
         try {
             $apiUser = env('MTN_MOMO_API_USER');
             $apiKey = env('MTN_MOMO_API_KEY');
-            $subscriptionKey = env('MTN_MOMO_SUBSCRIPTION_KEY');
+            $subscriptionKey = env('MTN_MOMO_SUBSCRIPTION_KEY'); // Primary key
             
             if (!$apiUser || !$apiKey || !$subscriptionKey) {
+                Log::error('MTN config missing', [
+                    'has_user' => !empty($apiUser),
+                    'has_key' => !empty($apiKey),
+                    'has_subscription' => !empty($subscriptionKey)
+                ]);
                 return ['success' => false, 'error' => 'Configuration MTN manquante'];
             }
 
             $baseUrl = $this->getBaseUrl('mtn');
+            $environment = env('MTN_MOMO_ENVIRONMENT', 'sandbox');
             
-            // Générer le token OAuth
+            // Étape 1: Générer le token OAuth avec Basic Auth
             $tokenResponse = Http::withHeaders([
                 'Ocp-Apim-Subscription-Key' => $subscriptionKey,
+                'Content-Length' => '0',
             ])->withBasicAuth($apiUser, $apiKey)
               ->post($baseUrl . '/collection/token/');
 
             if (!$tokenResponse->successful()) {
-                Log::error('MTN token error', ['response' => $tokenResponse->body()]);
-                return ['success' => false, 'error' => 'Erreur d\'authentification MTN'];
+                Log::error('MTN token error', [
+                    'status' => $tokenResponse->status(),
+                    'body' => $tokenResponse->body()
+                ]);
+                return ['success' => false, 'error' => 'Erreur authentification MTN'];
             }
 
-            $token = $tokenResponse->json()['access_token'];
+            $tokenData = $tokenResponse->json();
+            if (!isset($tokenData['access_token'])) {
+                Log::error('MTN token missing', ['response' => $tokenData]);
+                return ['success' => false, 'error' => 'Token non reçu'];
+            }
 
-            // Formater le numéro (sans préfixe pays pour le sandbox)
+            $token = $tokenData['access_token'];
+
+            // Formater le numéro de téléphone
             $phone = preg_replace('/\D/', '', $phoneNumber);
+            if (strpos($phone, '229') === 0) {
+                $phone = substr($phone, 3); // Enlever le préfixe pays pour Bénin
+            }
 
-            // MTN API gère automatiquement le pop-up USSD sur le téléphone du client
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $token,
-                'X-Reference-Id' => $reference,
-                'X-Target-Environment' => env('MTN_MOMO_ENVIRONMENT', 'sandbox'),
-                'Ocp-Apim-Subscription-Key' => $subscriptionKey,
-                'Content-Type' => 'application/json',
-            ])->post($baseUrl . '/collection/v1_0/requesttopay', [
+            // IMPORTANT: Le sandbox MTN utilise EUR, la production utilise XOF
+            $currency = $environment === 'sandbox' ? 'EUR' : 'XOF';
+
+            // Étape 2: Faire la requête de paiement
+            $payload = [
                 'amount' => (string) $amount,
-                'currency' => 'XOF',
+                'currency' => $currency,
                 'externalId' => $externalId ?? $reference,
                 'payer' => [
                     'partyIdType' => 'MSISDN',
                     'partyId' => $phone
                 ],
                 'payerMessage' => 'Vote Miss ESGIS',
-                'payeeNote' => 'Vote candidate'
+                'payeeNote' => 'Vote ref: ' . $reference
+            ];
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+                'X-Reference-Id' => $reference,
+                'X-Target-Environment' => $environment,
+                'Ocp-Apim-Subscription-Key' => $subscriptionKey,
+                'Content-Type' => 'application/json',
+            ])->post($baseUrl . '/collection/v1_0/requesttopay', $payload);
+
+            $statusCode = $response->status();
+            
+            Log::info('MTN Payment attempt', [
+                'status' => $statusCode,
+                'body' => $response->body(),
+                'payload' => $payload,
+                'headers_sent' => [
+                    'X-Reference-Id' => $reference,
+                    'X-Target-Environment' => $environment
+                ]
             ]);
 
-            if ($response->status() === 202) {
-                Log::info('MTN payment initiated', ['reference' => $reference]);
+            if ($statusCode === 202) {
+                Log::info('MTN payment initiated successfully', [
+                    'reference' => $reference,
+                    'currency' => $currency
+                ]);
                 return [
                     'success' => true,
                     'reference' => $reference,
@@ -89,12 +138,25 @@ class MoMoPaymentService
                 ];
             }
 
-            Log::error('MTN payment error', ['response' => $response->body()]);
-            return ['success' => false, 'error' => 'Erreur lors de l\'initiation du paiement'];
+            Log::error('MTN payment failed', [
+                'status' => $statusCode,
+                'body' => $response->body(),
+                'json' => $response->json()
+            ]);
+            
+            $errorMsg = $response->body() ?: ($response->json()['message'] ?? 'Unknown error');
+            
+            return [
+                'success' => false, 
+                'error' => 'Erreur MTN (' . $statusCode . '): ' . $errorMsg
+            ];
 
         } catch (\Exception $e) {
-            Log::error('MTN payment exception', ['error' => $e->getMessage()]);
-            return ['success' => false, 'error' => $e->getMessage()];
+            Log::error('MTN payment exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return ['success' => false, 'error' => 'Exception: ' . $e->getMessage()];
         }
     }
 
