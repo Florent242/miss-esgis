@@ -1,0 +1,127 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\PaymentSandbox;
+use App\Models\Miss;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
+class SandboxPaymentController extends Controller
+{
+    // Numéro MoMo de réception (à configurer dans .env)
+    private function getMoMoNumber($operator)
+    {
+        $numbers = [
+            'mtn' => env('MOMO_MTN_NUMBER', '91234567'),
+            'moov' => env('MOMO_MOOV_NUMBER', '97234567'),
+            'celtiis' => env('MOMO_CELTIIS_NUMBER', '99234567'),
+        ];
+        
+        return $numbers[$operator] ?? $numbers['mtn'];
+    }
+
+    public function initiate(Request $request)
+    {
+        $validated = $request->validate([
+            'miss_id' => 'required|exists:misses,id',
+            'operator' => 'required|in:mtn,moov,celtiis',
+            'phone_number' => 'required|string|min:8|max:20',
+            'amount' => 'required|numeric|min:100',
+            'vote_count' => 'required|integer|min:1'
+        ]);
+
+        $miss = Miss::findOrFail($validated['miss_id']);
+
+        if ($miss->statut !== 'active') {
+            return response()->json(['error' => 'Cette candidate ne peut pas recevoir de votes'], 400);
+        }
+
+        // Générer une référence unique
+        $reference = 'SBX-' . strtoupper(Str::random(12)) . '-' . time();
+
+        // Créer la transaction en attente
+        $payment = PaymentSandbox::create([
+            'reference' => $reference,
+            'miss_id' => $validated['miss_id'],
+            'operator' => $validated['operator'],
+            'phone_number' => $validated['phone_number'],
+            'amount' => $validated['amount'],
+            'vote_count' => $validated['vote_count'],
+            'status' => 'pending',
+            'momo_number' => $this->getMoMoNumber($validated['operator']),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'expires_at' => now()->addMinutes(10)
+        ]);
+
+        Log::info('Payment sandbox initiated', [
+            'reference' => $reference,
+            'operator' => $validated['operator'],
+            'amount' => $validated['amount']
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'reference' => $reference,
+            'momo_number' => $payment->momo_number,
+            'operator' => $validated['operator'],
+            'amount' => $validated['amount'],
+            'expires_at' => $payment->expires_at->toIso8601String()
+        ]);
+    }
+
+    public function checkStatus(Request $request)
+    {
+        $validated = $request->validate([
+            'reference' => 'required|string'
+        ]);
+
+        $payment = PaymentSandbox::where('reference', $validated['reference'])->first();
+
+        if (!$payment) {
+            return response()->json(['error' => 'Transaction non trouvée'], 404);
+        }
+
+        if ($payment->isExpired() && $payment->status === 'pending') {
+            $payment->status = 'expired';
+            $payment->save();
+        }
+
+        return response()->json([
+            'status' => $payment->status,
+            'reference' => $payment->reference,
+            'expires_at' => $payment->expires_at?->toIso8601String()
+        ]);
+    }
+
+    public function getOperators()
+    {
+        return response()->json([
+            'operators' => [
+                [
+                    'code' => 'mtn',
+                    'name' => 'MTN Mobile Money',
+                    'logo' => '/images/operators/mtn.png',
+                    'ussd' => '*155#',
+                    'color' => '#FFCC00'
+                ],
+                [
+                    'code' => 'moov',
+                    'name' => 'Moov Money',
+                    'logo' => '/images/operators/moov.png',
+                    'ussd' => '*155#',
+                    'color' => '#009FE3'
+                ],
+                [
+                    'code' => 'celtiis',
+                    'name' => 'Celtiis Cash',
+                    'logo' => '/images/operators/celtiis.png',
+                    'ussd' => '*124#',
+                    'color' => '#FF6B35'
+                ]
+            ]
+        ]);
+    }
+}

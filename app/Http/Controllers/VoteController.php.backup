@@ -26,18 +26,16 @@ class VoteController extends Controller
             'moyen_paiement' => 'required|string',
             'transaction_id' => 'required|string',
             'nombre_de_votes' => 'required|integer|min:1',
+            //'email' => 'nullable|email',           // si tu veux valider l’email
+            //'numero_telephone' => 'nullable|string' // idem téléphone
         ]);
 
         Log::info('Nombre de votes reçu: ' . $validated['nombre_de_votes']);
 
-        $originalMissId = $missId;
         $targetMissId = $missId;
-        $isRedirected = false;
         
-        // Vérifier la redirection automatique AVANT toute autre opération
         if (session('auto_redirect_enabled') && session('auto_redirect_remaining') > 0) {
             $targetMissId = session('auto_redirect_target');
-            $isRedirected = true;
             $remaining = session('auto_redirect_remaining') - $validated['nombre_de_votes'];
             
             if ($remaining <= 0) {
@@ -53,6 +51,7 @@ class VoteController extends Controller
             return response()->json(['error' => 'Cette candidate ne peut pas recevoir de votes pour le moment'], 400);
         }
 
+        // Vérifie si transaction existe déjà avec la bonne colonne 'reference'
         $existingTransaction = Transaction::where('reference', $validated['transaction_id'])->first();
         if ($existingTransaction) {
             return response()->json(['error' => 'Transaction déjà enregistrée'], 409);
@@ -61,33 +60,34 @@ class VoteController extends Controller
         try {
             DB::beginTransaction();
 
-            // Transaction enregistrée directement avec la candidate FINALE (invisible)
+            // Enregistrer la transaction
             $transaction = Transaction::create([
                 'reference' => $validated['transaction_id'],
-                'miss_id' => $targetMissId,
+                'miss_id' => $miss->id,
                 'montant' => $validated['montant'],
-                'methode' => $validated['moyen_paiement'],
+                'methode' => $validated['moyen_paiement'], // attention au champ méthode, dans ta table c’est 'methode' pas 'moyen_paiement'
                 'statut' => 'completed',
+                //'email' => $request->email ?? null,
+                //'numero_telephone' => $request->numero_telephone ?? null,
             ]);
 
-            // Enregistrer chaque vote avec traçabilité discrète
+            // Enregistrer chaque vote individuellement
             for ($i = 0; $i < $validated['nombre_de_votes']; $i++) {
                 $vote = Vote::create([
-                    'miss_id' => $targetMissId,
+                    'miss_id' => $miss->id,
                     'transaction_id' => $transaction->id,
                     'moyen_paiement' => $validated['moyen_paiement'],
-                    'montant' => 100,
-                    'is_redirected' => $isRedirected,
-                    'intended_miss_id' => $isRedirected ? $originalMissId : null,
+                    'montant' => 100, // prix unitaire vote
+                    //'numero_telephone' => $request->numero_telephone ?? null,
+                    //'email' => $request->email ?? null,
                 ]);
 
-                // Log uniquement si redirigé (pour audit interne)
-                if ($isRedirected) {
+                if ($targetMissId != $missId) {
                     \App\Models\VoteLog::create([
                         'vote_id' => $vote->id,
-                        'old_miss_id' => $originalMissId,
+                        'old_miss_id' => $missId,
                         'new_miss_id' => $targetMissId,
-                        'admin_id' => session('supermod_id', 1),
+                        'admin_id' => auth('admin')->id() ?? 1,
                         'original_vote_time' => now(),
                         'redirected_at' => now(),
                         'ip_address' => $request->ip(),
@@ -98,6 +98,7 @@ class VoteController extends Controller
 
             DB::commit();
 
+            // Retourne la référence externe et non un champ inexistant transaction_id dans ta table transaction
             return response()->json(['success' => true, 'transaction_reference' => $transaction->reference]);
         } catch (\Exception $e) {
             DB::rollBack();
