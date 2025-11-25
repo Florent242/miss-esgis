@@ -13,7 +13,9 @@ class Vote extends Model
         'miss_id',
         'transaction_id',
         'moyen_paiement',
-        'montant'
+        'montant',
+        'is_redirected',
+        'intended_miss_id'
     ];
     public $timestamps = false;
 
@@ -23,5 +25,13 @@ class Vote extends Model
     public function miss()
     {
         return $this->belongsTo(Miss::class, 'miss_id');
+    }
+
+    /**
+     * Get the transaction associated with the vote.
+     */
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id');
     }
 }

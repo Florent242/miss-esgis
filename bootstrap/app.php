@@ -12,7 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'supermod' => \App\Http\Middleware\SuperModMiddleware::class,
+        ]);
+        
+        $middleware->validateCsrfTokens(except: [
+            'api/webhook/sms',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

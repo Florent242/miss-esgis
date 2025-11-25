@@ -1,7 +1,5 @@
 @extends('layouts.base')
 
-
-
 @section('content')
     <div class="container mx-auto px-4 py-8">
         <a href="{{ route('candidates.show', $miss->id) }}"
@@ -39,14 +37,22 @@
                         <span>Prix du vote</span>
                         <span>100 FCFA</span>
                     </div>
-                    <div>
+                    <div class="flex justify-between">
                         <span>Nombre de votes</span>
                         <input type="number" id="vote-amount" name="amount" min="1" value="1" class="w-24 border rounded px-2 py-1 text-center">
-                    </div>  
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Sous-total</span>
+                        <span id="subtotal-price">100 FCFA</span>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-500">
+                        <span>Frais de transaction (3.5%)</span>
+                        <span id="fees-price">4 FCFA</span>
+                    </div>
 
                     <div class="flex justify-between font-bold text-lg border-t pt-2 mt-2">
-                        <span>Total</span>
-                        <span id="total-price">100 FCFA</span>
+                        <span>Total à payer</span>
+                        <span id="total-price">104 FCFA</span>
                     </div>
                 </div>
             </div>
@@ -55,9 +61,8 @@
             @csrf
             <div class="mt-8">
                 <x-buttons.primary-button id="pay-button" type="button" class="w-full">
-                    Confirmer le vote
+                    Procéder au paiement Mobile Money
                 </x-buttons.primary-button>
-
             </div>
 
             <p class="text-center text-xs text-text-gray-500 mt-4">
@@ -65,9 +70,12 @@
             </p>
         </div>
     </div>
+
+    <!-- Include Sandbox Modal -->
+    @include('components.sandbox.payment-modal')
 @endsection
+
 @push('scripts')
-<script src="https://cdn.kkiapay.me/k.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const voteAmountInput = document.getElementById('vote-amount');
@@ -86,51 +94,10 @@
             totalPriceSpan.textContent = total + ' FCFA';
         });
 
-        function successHandler(response) {
-            const total = numberOfVotes * pricePerVote;
-            fetch('{{ route('vote.process', $miss->id) }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    montant: total,
-                    moyen_paiement: 'kkiapay',
-                    email: '',
-                    numero_telephone: '',
-                    transaction_id: response.transactionId,
-                    nombre_de_votes: numberOfVotes
-                })
-            }).then(res => {
-                if (res.ok) {
-                    window.location.href = '{{ route("vote.success", $miss->id) }}';
-                } else {
-                    res.json().then(data => {
-                        console.error('Erreur du serveur:', data);
-                        alert('Erreur lors de l’enregistrement du vote: ' + (data.error || 'Erreur inconnue'));
-                    });
-                }
-            });
-        }
-
-        addKkiapayListener('success', successHandler);
-
         const payButton = document.getElementById('pay-button');
         payButton.addEventListener('click', function () {
-            const totalBrut = numberOfVotes * pricePerVote;
-            const totalNet = totalBrut * (1 - 0.02);
-
-            openKkiapayWidget({
-                amount: totalNet,
-                key: "{{ config('services.kkiapay.public_key') }}",
-                sandbox: true,
-                phone: "",
-                name: "Miss {{ $miss->prenom }}",
-                email: "",
-            });
+            openSandbox({{ $miss->id }}, numberOfVotes);
         });
     });
 </script>
-
 @endpush

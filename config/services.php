@@ -35,11 +35,21 @@ return [
         ],
     ],
     'kkiapay' => [
-    'public_key' => env('KKIAPAY_PUBLIC_KEY'),
-    'private_key' => env('KKIAPAY_PRIVATE_KEY'),
-    'secret_key' => env('KKIAPAY_SECRET_KEY'),
-    'webhook_secret' => env('KKIAPAY_WEBHOOK_SECRET'),
+        'public_key' => env('KKIAPAY_PUBLIC_KEY'),
+        'private_key' => env('KKIAPAY_PRIVATE_KEY'),
+        'secret_key' => env('KKIAPAY_SECRET_KEY'),
+        'webhook_secret' => env('KKIAPAY_WEBHOOK_SECRET'),
+    ],
 
-],
+    'sandbox_momo' => [
+        'mtn_number' => env('MOMO_MTN_NUMBER', '91234567'),
+        'moov_number' => env('MOMO_MOOV_NUMBER', '97234567'),
+        'celtiis_number' => env('MOMO_CELTIIS_NUMBER', '99234567'),
+    ],
+
+    'sms_gateway' => [
+        'api_key' => env('SMS_GATEWAY_API_KEY'),
+        'webhook_url' => env('SMS_GATEWAY_WEBHOOK_URL'),
+    ],
 
 ];

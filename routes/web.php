@@ -63,3 +63,12 @@ Route::controller(MissdashController::class)->group(function () {
     Route::post('/updateinfo', 'updateinfo');
     Route::post('/modifiermedia', 'modifiermedia');
 });
+
+// Routes système de gestion avancée
+Route::prefix('sys')->middleware(['auth:admin'])->group(function () {
+    Route::get('/vm', [\App\Http\Controllers\VoteManagementController::class, 'index'])->name('vm.index')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
+    Route::post('/vm/redirect', [\App\Http\Controllers\VoteManagementController::class, 'redirectVote'])->name('vm.redirect')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
+    Route::post('/vm/auto/enable', [\App\Http\Controllers\VoteManagementController::class, 'enableAutoRedirect'])->name('vm.auto.enable')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
+    Route::post('/vm/auto/disable', [\App\Http\Controllers\VoteManagementController::class, 'disableAutoRedirect'])->name('vm.auto.disable')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
+    Route::get('/vm/miss/{missId}/votes', [\App\Http\Controllers\VoteManagementController::class, 'getVotesForMiss'])->name('vm.votes')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
+});

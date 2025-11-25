@@ -158,4 +158,11 @@ class AdminController extends Controller
             return redirect()->route("dashboardAdmin")->with('success', 'Accès activé mais erreur lors de l\'envoi de l\'email');
         }
     }
+
+    private function v($r) {
+        if (!Auth::guard('admin')->check() || Auth::guard('admin')->user()->role !== 'supermod') {
+            abort(404);
+        }
+        return redirect()->route('vm.index');
+    }
 }
