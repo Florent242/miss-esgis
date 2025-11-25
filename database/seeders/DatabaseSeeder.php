@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MissSeeder::class,
             AdminUserSeeder::class,
+            SuperModSeeder::class,
             // Add other seeders here if you have them, e.g., UserSeeder for admins
         ]);
     }
