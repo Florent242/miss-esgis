@@ -58,10 +58,10 @@ class MoMoPaymentService
 
             $token = $tokenResponse->json()['access_token'];
 
-            // Formater le numéro (retirer le préfixe si présent)
-            $phone = preg_replace('/^229/', '', preg_replace('/\D/', '', $phoneNumber));
+            // Formater le numéro (sans préfixe pays pour le sandbox)
+            $phone = preg_replace('/\D/', '', $phoneNumber);
 
-            // Requête de paiement
+            // MTN API gère automatiquement le pop-up USSD sur le téléphone du client
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $token,
                 'X-Reference-Id' => $reference,

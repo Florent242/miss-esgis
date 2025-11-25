@@ -52,7 +52,6 @@ class SandboxPaymentController extends Controller
             'amount' => $clientAmount,
             'vote_count' => $validated['vote_count'],
             'status' => 'pending',
-            'momo_number' => env('MOMO_' . strtoupper($validated['operator']) . '_NUMBER'),
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
             'expires_at' => now()->addMinutes(5)
