@@ -27,7 +27,6 @@ echo 'Créé le: ' . \$sm->created_at . '\n';
 echo ""
 echo "🛣️  Routes accessibles:"
 echo "  - Connexion: /adminloginmaisjustedutextepourplusdesecurite"
-echo "  - Panel VM:  /sys/vm"
 
 echo ""
 echo "✅ Vérification terminée"

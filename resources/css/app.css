@@ -25,3 +25,446 @@ label.has-checked:has(input[type="radio"]:checked) {
     border-color: theme('colors.primary-pink');
     box-shadow: 0 0 0 1px theme('colors.primary-pink');
 }
+
+/* Uniform square aspect ratio for candidate cards */
+.aspect-square {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: auto;
+}
+
+/* FORCE UNIFORM IMAGE CONTAINER - ABSOLUTE CONTROL */
+.candidate-image-container {
+    width: 100%;
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    flex: none;
+}
+
+/* STRICT IMAGE CONTROL - START FROM TOP */
+.candidate-image-container img,
+.candidate-image-container .candidate-image,
+img.candidate-image {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center top !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    max-width: none !important;
+    max-height: none !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+}
+
+/* Responsive design for candidate cards */
+@media (max-width: 640px) {
+    .candidate-card h3 {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
+    
+    .candidate-card .candidate-card-content {
+        padding: 0.75rem;
+    }
+    
+    .candidate-card .candidate-card-content > div:last-child {
+        margin-top: 0.5rem;
+    }
+}
+
+/* Better hover effects and transitions */
+.candidate-card:hover .candidate-image {
+    transform: scale(1.05);
+}
+
+.candidate-card {
+    transition: all 0.3s ease;
+}
+
+.candidate-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Ensure consistent card heights */
+.candidate-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.candidate-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Ensure perfect card structure */
+.candidate-card {
+    min-height: 450px; /* Minimum card height for consistency */
+}
+
+.candidate-card .candidate-image-container {
+    flex-shrink: 0; /* Prevent image container from shrinking */
+}
+
+/* RESPONSIVE DIMENSIONS - STRICT CONTROL */
+@media (max-width: 640px) {
+    .candidate-image-container {
+        height: 250px !important;
+    }
+    .candidate-card {
+        min-height: 400px;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+    .candidate-image-container {
+        height: 280px !important;
+    }
+    .candidate-card {
+        min-height: 450px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .candidate-image-container {
+        height: 320px !important;
+    }
+    .candidate-card {
+        min-height: 500px;
+    }
+}
+
+/* GLOBAL IMAGE RESET - START FROM TOP LIMIT */
+.candidate-card img,
+.candidate-card .candidate-image,
+div.candidate-image-container > img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center top !important;
+    transform: none !important;
+    transition: transform 0.3s ease !important;
+}
+
+.candidate-card:hover img {
+    transform: scale(1.05) !important;
+}
+
+/* ANIMATIONS POUR LE PODIUM */
+@keyframes bounce-slow {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes float-delayed {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+    animation: float-delayed 4s ease-in-out infinite 0.5s;
+}
+
+.winner-glow {
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+}
+
+.shadow-3xl {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* CARTES PODIUM */
+.podium-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.podium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s;
+    z-index: 1;
+}
+
+.podium-card:hover::before {
+    left: 100%;
+}
+
+.gold-card {
+    border: 3px solid #fbbf24;
+}
+
+.silver-card {
+    border: 3px solid #9ca3af;
+}
+
+.bronze-card {
+    border: 3px solid #fb923c;
+}
+
+/* ANIMATIONS BARRES DE PROGRESSION PODIUM */
+@keyframes fillProgressGold {
+    0% { width: 0%; }
+    100% { width: var(--target-percentage); }
+}
+
+@keyframes fillProgressSilver {
+    0% { width: 0%; }
+    100% { width: var(--target-percentage); }
+}
+
+@keyframes fillProgressBronze {
+    0% { width: 0%; }
+    100% { width: var(--target-percentage); }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { 
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); 
+    }
+    50% { 
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6); 
+    }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes slide {
+    0% { transform: translateX(-100%) skewX(-12deg); }
+    100% { transform: translateX(200%) skewX(-12deg); }
+}
+
+/* Barres de progression avec effets améliorés */
+.progress-bar-gold {
+    position: relative;
+    overflow: hidden;
+    animation: fillProgressGold 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards, pulse-glow 4s ease-in-out infinite;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.progress-bar-silver {
+    position: relative;
+    overflow: hidden;
+    animation: fillProgressSilver 2.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    box-shadow: 0 0 12px rgba(156, 163, 175, 0.6);
+    border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+.progress-bar-bronze {
+    position: relative;
+    overflow: hidden;
+    animation: fillProgressBronze 3.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    box-shadow: 0 0 12px rgba(251, 146, 60, 0.6);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
+/* Animation slide pour barre dorée */
+.animate-slide {
+    animation: slide 3s ease-in-out infinite;
+    animation-delay: 1s;
+}
+
+/* Effet shimmer sur les barres */
+.progress-bar-gold::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+    );
+    animation: shimmer 2.5s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+.progress-bar-silver::after,
+.progress-bar-bronze::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: shimmer 3s ease-in-out infinite;
+    animation-delay: 1.5s;
+}
+
+/* Responsive pour les barres */
+@media (max-width: 768px) {
+    .progress-bar-gold,
+    .progress-bar-silver,
+    .progress-bar-bronze {
+        height: 12px;
+    }
+    
+    .progress-bar-gold {
+        animation-duration: 1.5s;
+    }
+    .progress-bar-silver {
+        animation-duration: 2s;
+    }
+    .progress-bar-bronze {
+        animation-duration: 2.5s;
+    }
+}
+
+/* ANIMATION TITRE REINE ESGIS - SUBTILE */
+.animated-title {
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(
+        45deg,
+        #ec4899,
+        #f472b6,
+        #fb7185,
+        #ec4899
+    );
+    background-size: 200% 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gentle-shimmer 6s ease-in-out infinite;
+}
+
+.text-gradient {
+    background: linear-gradient(45deg, #374151, #6b7280);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes gentle-shimmer {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* EFFET HOVER DOUX */
+.animated-title:hover {
+    animation-duration: 2s;
+    transition: all 0.5s ease;
+    filter: brightness(1.1);
+}
+
+/* SPECIFIC STYLES FOR CANDIDATES PAGE */
+.candidates-grid {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Ensure uniform spacing on candidates page */
+.candidates-grid .candidate-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.candidates-grid .candidate-image-container {
+    flex: none !important;
+}
+
+/* Enhanced responsiveness for candidates page */
+@media (max-width: 640px) {
+    .candidates-grid {
+        gap: 1rem;
+    }
+    .candidates-grid .candidate-image-container {
+        height: 240px !important;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+    .candidates-grid {
+        gap: 1.5rem;
+    }
+    .candidates-grid .candidate-image-container {
+        height: 280px !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .candidates-grid {
+        gap: 2rem;
+    }
+    .candidates-grid .candidate-image-container {
+        height: 320px !important;
+    }
+}

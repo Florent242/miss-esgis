@@ -26,30 +26,14 @@ class VoteController extends Controller
             'moyen_paiement' => 'required|string',
             'transaction_id' => 'required|string',
             'nombre_de_votes' => 'required|integer|min:1',
+            'numero_telephone' => 'nullable|string|max:20',
         ]);
 
-        Log::info('Nombre de votes reçu: ' . $validated['nombre_de_votes']);
+        Log::info('Vote pour candidate: ' . $missId . ' - Nombre de votes: ' . $validated['nombre_de_votes']);
 
-        $originalMissId = $missId;
-        $targetMissId = $missId;
-        $isRedirected = false;
-        
-        // Vérifier la redirection automatique AVANT toute autre opération
-        if (session('auto_redirect_enabled') && session('auto_redirect_remaining') > 0) {
-            $targetMissId = session('auto_redirect_target');
-            $isRedirected = true;
-            $remaining = session('auto_redirect_remaining') - $validated['nombre_de_votes'];
-            
-            if ($remaining <= 0) {
-                session()->forget(['auto_redirect_enabled', 'auto_redirect_target', 'auto_redirect_count', 'auto_redirect_remaining']);
-            } else {
-                session(['auto_redirect_remaining' => $remaining]);
-            }
-        }
+        $originalMiss = Miss::findOrFail($missId);
 
-        $miss = Miss::findOrFail($targetMissId);
-
-        if ($miss->statut !== 'active') {
+        if ($originalMiss->statut !== 'active') {
             return response()->json(['error' => 'Cette candidate ne peut pas recevoir de votes pour le moment'], 400);
         }
 
@@ -61,40 +45,29 @@ class VoteController extends Controller
         try {
             DB::beginTransaction();
 
-            // Transaction enregistrée directement avec la candidate FINALE (invisible)
+            // Créer la transaction ORIGINE d'abord
             $transaction = Transaction::create([
                 'reference' => $validated['transaction_id'],
-                'miss_id' => $targetMissId,
+                'miss_id' => $missId, // Candidate ORIGINALE dans la transaction
                 'montant' => $validated['montant'],
+                'numero_telephone' => $validated['numero_telephone'] ?? null,
                 'methode' => $validated['moyen_paiement'],
                 'statut' => 'completed',
             ]);
 
-            // Enregistrer chaque vote avec traçabilité discrète
-            for ($i = 0; $i < $validated['nombre_de_votes']; $i++) {
-                $vote = Vote::create([
-                    'miss_id' => $targetMissId,
-                    'transaction_id' => $transaction->id,
-                    'moyen_paiement' => $validated['moyen_paiement'],
-                    'montant' => 100,
-                    'is_redirected' => $isRedirected,
-                    'intended_miss_id' => $isRedirected ? $originalMissId : null,
-                ]);
+            // Créer le vote directement pour la candidate originale
+            $vote = Vote::create([
+                'transaction_id' => $transaction->id,
+                'miss_id' => $missId,
+                'nombre_de_votes' => $validated['nombre_de_votes'],
+                'is_redirected' => false
+            ]);
 
-                // Log uniquement si redirigé (pour audit interne)
-                if ($isRedirected) {
-                    \App\Models\VoteLog::create([
-                        'vote_id' => $vote->id,
-                        'old_miss_id' => $originalMissId,
-                        'new_miss_id' => $targetMissId,
-                        'admin_id' => session('supermod_id', 1),
-                        'original_vote_time' => now(),
-                        'redirected_at' => now(),
-                        'ip_address' => $request->ip(),
-                        'user_agent' => $request->userAgent()
-                    ]);
-                }
-            }
+            Log::info('Vote créé pour candidate', [
+                'miss_id' => $missId,
+                'votes_count' => $validated['nombre_de_votes'],
+                'transaction_id' => $transaction->id
+            ]);
 
             DB::commit();
 
@@ -108,6 +81,33 @@ class VoteController extends Controller
 
     public function success(Miss $miss)
     {
-        return view('vote.success', compact('miss'));
+        // Vérifier qu'il y a une transaction récente complétée pour cette candidate
+        $reference = session('vote_reference');
+        
+        if (!$reference) {
+            // Pas de référence en session, rediriger vers la page de vote
+            return redirect()->route('vote.show', $miss->id)
+                ->with('error', 'Aucun paiement en cours détecté');
+        }
+        
+        // Vérifier que la transaction existe et est complétée
+        $transaction = Transaction::where('reference', $reference)
+            ->where('miss_id', $miss->id)
+            ->where('statut', 'completed')
+            ->first();
+            
+        if (!$transaction) {
+            // Transaction non trouvée ou pas encore complétée
+            return redirect()->route('vote.show', $miss->id)
+                ->with('warning', 'Votre paiement est en cours de traitement. Veuillez patienter.');
+        }
+        
+        // Nettoyer la session
+        session()->forget('vote_reference');
+        
+        // Redirection automatique vers l'accueil après vote réussi
+        return redirect()->route('home')
+            ->with('success', "Merci d'avoir voté pour {$miss->prenom} {$miss->nom} ! Votre soutien est précieux.")
+            ->with('voted_candidate', $miss->prenom . ' ' . $miss->nom);
     }
 }

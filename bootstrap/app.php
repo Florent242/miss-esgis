@@ -14,10 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'supermod' => \App\Http\Middleware\SuperModMiddleware::class,
+            'api.key' => \App\Http\Middleware\ApiKeyMiddleware::class,
+            'restricted.admin' => \App\Http\Middleware\RestrictedAdminMiddleware::class,
         ]);
         
         $middleware->validateCsrfTokens(except: [
             'api/webhook/sms',
+            'api/fedapay/*',
+            'api/transactions',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

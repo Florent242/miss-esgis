@@ -35,7 +35,34 @@ class AdminController extends Controller
                 $candidate->age = \Carbon\Carbon::parse($candidate->date_naissance)->age;
             }
             
-            return view('admin.dashboard',["candidates"=>$candidates,"transactions"=>$transactions,"candidatesaprouver"=>$candidatesaprouver]);
+            // Statistiques des votes par statut
+            $votesActives = Vote::whereHas('miss', function($query) {
+                $query->where('statut', 'active');
+            })->count();
+            
+            $votesRestreintes = Vote::whereHas('miss', function($query) {
+                $query->where('statut', 'restricted');
+            })->count();
+            
+            $votesTotal = Vote::count();
+            
+            // Revenus uniquement des candidates actives
+            $revenusActives = Transaction::whereHas('miss', function($query) {
+                $query->where('statut', 'active');
+            })->whereIn('statut', ['success', 'completed'])->sum('montant');
+            
+            $revenusTotal = Transaction::whereIn('statut', ['success', 'completed'])->sum('montant');
+            
+            return view('admin.dashboard',[
+                "candidates" => $candidates,
+                "transactions" => $transactions,
+                "candidatesaprouver" => $candidatesaprouver,
+                "votesActives" => $votesActives,
+                "votesRestreintes" => $votesRestreintes,
+                "votesTotal" => $votesTotal,
+                "revenusActives" => $revenusActives,
+                "revenusTotal" => $revenusTotal
+            ]);
         }
          return redirect()->route("connexion")->with('error', "Veuillez vous connecter");
         
@@ -58,6 +85,12 @@ class AdminController extends Controller
             {
                 Auth::guard('admin')->login($admin);
                 session()->regenerate();
+                
+                // Redirection spéciale pour le compte admin principal
+                if ($admin->email === 'r.31N3-35Gis@admin.com') {
+                    return redirect()->route('simpleDashboard');
+                }
+                
                 return redirect()->route("dashboardAdmin");
             }
          }

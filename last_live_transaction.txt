@@ -1,0 +1,7 @@
+{
+    "id": 107684029,
+    "payment_url": "https:\/\/process.fedapay.com\/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEwNzY4NDAyOSwiZXhwIjoxNzY0MTkxNDc2fQ.iQlcql5rWzgYS4z6oEIs8mfwMc24sddBkw07g-ahk7M",
+    "amount": 100,
+    "phone": "+2290161804972",
+    "created_at": "2025-11-25 21:11:16"
+}

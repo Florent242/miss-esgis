@@ -52,4 +52,12 @@ return [
         'webhook_url' => env('SMS_GATEWAY_WEBHOOK_URL'),
     ],
 
+    'fedapay' => [
+        'api_key' => env('FEDAPAY_API_KEY', 'fedapay_api_key_123456789'),
+        'public_key' => env('FEDAPAY_PUBLIC_KEY'),
+        'secret_key' => env('FEDAPAY_SECRET_KEY'),
+        'environment' => env('FEDAPAY_ENVIRONMENT', 'sandbox'),
+        'webhook_secret' => env('FEDAPAY_WEBHOOK_SECRET'),
+    ],
+
 ];

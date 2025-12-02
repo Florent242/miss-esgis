@@ -177,7 +177,19 @@
                 <div class="flex items-center justify-between">
                     <div class="min-w-0 flex-1">
                         <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Votes Totaux</p>
-                        <h3 class="text-2xl md:text-3xl font-bold text-purple-600 mt-2">{{ $candidates->sum('votes_count') }}</h3>
+                        <h3 class="text-2xl md:text-3xl font-bold text-purple-600 mt-2">{{ $votesTotal ?? $candidates->sum('votes_count') }}</h3>
+                        
+                        <!-- Détails par statut -->
+                        <div class="mt-3 pt-3 border-t border-gray-100 space-y-1">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-green-600 font-medium">✓ Candidates actives</span>
+                                <span class="font-bold text-green-700">{{ $votesActives ?? 0 }}</span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-orange-600 font-medium">⚠ Candidates restreintes</span>
+                                <span class="font-bold text-orange-700">{{ $votesRestreintes ?? 0 }}</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="bg-purple-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -191,8 +203,20 @@
             <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 border-l-4 border-green-500">
                 <div class="flex items-center justify-between">
                     <div class="min-w-0 flex-1">
-                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Revenus</p>
-                        <h3 class="text-2xl md:text-3xl font-bold text-green-600 mt-2">{{ number_format($transactions->sum('montant'), 0, ',', ' ') }} FCFA</h3>
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Revenus (Candidates actives)</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-green-600 mt-2">{{ number_format($revenusActives ?? 0, 0, ',', ' ') }} FCFA</h3>
+                        
+                        <!-- Détails par statut -->
+                        <div class="mt-3 pt-3 border-t border-gray-100 space-y-1">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-green-600 font-medium">✓ Actives</span>
+                                <span class="font-bold text-green-700">{{ number_format($revenusActives ?? 0, 0, ',', ' ') }} F</span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-600 font-medium">Total global</span>
+                                <span class="font-bold text-gray-700">{{ number_format($revenusTotal ?? 0, 0, ',', ' ') }} F</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="bg-green-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

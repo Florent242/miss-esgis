@@ -126,6 +126,7 @@ class SmsWebhookController extends Controller
                 'reference' => $payment->reference,
                 'miss_id' => $payment->miss_id,
                 'montant' => $payment->amount,
+                'numero_telephone' => $payment->phone_number,
                 'methode' => 'momo_' . $payment->operator,
                 'statut' => 'completed',
             ]);

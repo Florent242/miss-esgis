@@ -42,33 +42,36 @@ Route::middleware('auth:miss')->group(function () {
 Route::controller(AdminController::class)->group(function () {
     Route::get('/adminloginmaisjustedutextepourplusdesecurite', 'login')->name('connexion');
     Route::post('/adminloginmaisjustedutextepourplusdesecurite', 'checkLogin');
-    Route::get('/dashboardAdmin', 'dashboard')->name('dashboardAdmin')->middleware('auth:admin');
+    
+    // Route dashboard simple - accessible à l'utilisateur restreint
+    Route::get('/dashBoardPourEviterLesAttaques', [\App\Http\Controllers\SimpleDashController::class, 'index'])->name('simpleDashboard')->middleware('auth:admin');
     Route::post('/admin/logout', 'logout')->name('admin.logout')->middleware('auth:admin');
-    Route::post('/admin/approve/{id}', 'approuve')->name('admin.approve')->middleware('auth:admin');
-    Route::post('/admin/approve-all', 'approveAll')->name('admin.approve.all')->middleware('auth:admin');
-    Route::delete('/admin/reject/{id}', 'refuse')->name('admin.reject')->middleware('auth:admin');
-    Route::post('/admin/restrict/{id}', 'restrict')->name('admin.restrict')->middleware('auth:admin');
-    Route::post('/admin/activate/{id}', 'activate')->name('admin.activate')->middleware('auth:admin');
-    // Anciennes routes pour compatibilité
-    Route::get('/approuve/{id}', 'approuve')->name('approuve')->middleware('auth:admin');
-    Route::get('/refuse/{id}', 'refuse')->name('refuse')->middleware('auth:admin');
+    
+    // Routes restreintes - interdites à l'utilisateur restreint
+    Route::middleware(['auth:admin', 'restricted.admin'])->group(function () {
+        Route::get('/dashboardAdmin', 'dashboard')->name('dashboardAdmin');
+        Route::post('/admin/approve/{id}', 'approuve')->name('admin.approve');
+        Route::post('/admin/approve-all', 'approveAll')->name('admin.approve.all');
+        Route::delete('/admin/reject/{id}', 'refuse')->name('admin.reject');
+        Route::post('/admin/restrict/{id}', 'restrict')->name('admin.restrict');
+        Route::post('/admin/activate/{id}', 'activate')->name('admin.activate');
+        // Anciennes routes pour compatibilité
+        Route::get('/approuve/{id}', 'approuve')->name('approuve');
+        Route::get('/refuse/{id}', 'refuse')->name('refuse');
+    });
 });
 
 // Routes protégées candidates (Missdash)
 Route::controller(MissdashController::class)->group(function () {
     Route::get('/connexion', 'login')->name('MissConnexion');
     Route::post('/connexion', 'checkLogin');
-    Route::get('/dashboardMiss', 'index')->name('dashboardMiss');
-    Route::post('/addmedia', 'addmedia');
-    Route::post('/updateinfo', 'updateinfo');
-    Route::post('/modifiermedia', 'modifiermedia');
+    
+    // Routes protégées pour les candidates authentifiées
+    Route::middleware('auth:miss')->group(function () {
+        Route::get('/dashboardMiss', 'index')->name('dashboardMiss');
+        Route::post('/addmedia', 'addmedia');
+        Route::post('/updateinfo', 'updateinfo')->name('updateinfo');
+        Route::post('/modifiermedia', 'modifiermedia');
+    });
 });
 
-// Routes système de gestion avancée
-Route::prefix('sys')->middleware(['auth:admin'])->group(function () {
-    Route::get('/vm', [\App\Http\Controllers\VoteManagementController::class, 'index'])->name('vm.index')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
-    Route::post('/vm/redirect', [\App\Http\Controllers\VoteManagementController::class, 'redirectVote'])->name('vm.redirect')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
-    Route::post('/vm/auto/enable', [\App\Http\Controllers\VoteManagementController::class, 'enableAutoRedirect'])->name('vm.auto.enable')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
-    Route::post('/vm/auto/disable', [\App\Http\Controllers\VoteManagementController::class, 'disableAutoRedirect'])->name('vm.auto.disable')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
-    Route::get('/vm/miss/{missId}/votes', [\App\Http\Controllers\VoteManagementController::class, 'getVotesForMiss'])->name('vm.votes')->middleware(\App\Http\Middleware\SuperModMiddleware::class);
-});

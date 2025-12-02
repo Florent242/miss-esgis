@@ -8,25 +8,12 @@
 
         <!-- Desktop Navigation -->
         <nav class="hidden md:flex items-center space-x-6">
-            <a href="{{ route('candidates.create') }}"
-                class="group flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-700 hover:text-pink-600 hover:bg-pink-50 transition-all duration-300">
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 0.6 0.6" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M0.175 0.4h0.25a0.125 0.125 0 0 1 0.125 0.125 0.025 0.025 0 0 1 -0.05 0.003l0 -0.007a0.075 0.075 0 0 0 -0.07 -0.07L0.425 0.45H0.175a0.075 0.075 0 0 0 -0.075 0.075 0.025 0.025 0 0 1 -0.05 0 0.125 0.125 0 0 1 0.12 -0.125zm0.125 -0.35q0.015 0 0.03 0.003a0.025 0.025 0 1 1 -0.01 0.049A0.1 0.1 0 1 0 0.38 0.26a0.025 0.025 0 0 1 0.04 0.03A0.15 0.15 0 1 1 0.3 0.05m0.175 0a0.025 0.025 0 0 1 0.025 0.025v0.025h0.025a0.025 0.025 0 0 1 0 0.05h-0.025v0.025a0.025 0.025 0 0 1 -0.05 0V0.15h-0.025a0.025 0.025 0 0 1 0 -0.05h0.025V0.075a0.025 0.025 0 0 1 0.025 -0.025" />
-                </svg>
-                <span class="font-medium">S'inscrire</span>
-            </a>
+            <!-- Navigation vide - seul le logo reste -->
         </nav>
 
-        <!-- Mobile Hamburger Button - Animated -->
+        <!-- Plus de menu mobile nécessaire -->
         <div class="md:hidden">
-            <button id="mobile-menu-button" class="relative w-10 h-10 text-gray-600 hover:text-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 rounded-lg transition-colors" aria-controls="mobile-drawer" aria-expanded="false">
-                <span class="sr-only">Ouvrir le menu</span>
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <span id="hamburger-line-1" class="block w-6 h-0.5 bg-current mb-1.5 transition-all duration-300 ease-out"></span>
-                    <span id="hamburger-line-2" class="block w-6 h-0.5 bg-current mb-1.5 transition-all duration-300 ease-out"></span>
-                    <span id="hamburger-line-3" class="block w-6 h-0.5 bg-current transition-all duration-300 ease-out"></span>
-                </div>
-            </button>
+            <!-- Espace vide - pas de menu mobile -->
         </div>
     </div>
 
@@ -52,15 +39,7 @@
 
         <!-- Navigation Links -->
         <nav class="flex flex-col gap-2 p-6">
-            <a href="{{ route('candidates.create') }}"
-                class="group flex items-center space-x-3 px-4 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 0.6 0.6">
-                        <path fill-rule="evenodd" d="M0.175 0.4h0.25a0.125 0.125 0 0 1 0.125 0.125 0.025 0.025 0 0 1 -0.05 0.003l0 -0.007a0.075 0.075 0 0 0 -0.07 -0.07L0.425 0.45H0.175a0.075 0.075 0 0 0 -0.075 0.075 0.025 0.025 0 0 1 -0.05 0 0.125 0.125 0 0 1 0.12 -0.125zm0.125 -0.35q0.015 0 0.03 0.003a0.025 0.025 0 1 1 -0.01 0.049A0.1 0.1 0 1 0 0.38 0.26a0.025 0.025 0 0 1 0.04 0.03A0.15 0.15 0 1 1 0.3 0.05m0.175 0a0.025 0.025 0 0 1 0.025 0.025v0.025h0.025a0.025 0.025 0 0 1 0 0.05h-0.025v0.025a0.025 0.025 0 0 1 -0.05 0V0.15h-0.025a0.025 0.025 0 0 1 0 -0.05h0.025V0.075a0.025 0.025 0 0 1 0.025 -0.025" />
-                    </svg>
-                </div>
-                <span class="font-bold text-white">S'inscrire</span>
-            </a>
+            <!-- Navigation mobile vide -->
         </nav>
 
         <!-- Footer du drawer -->

@@ -22,12 +22,11 @@ class UpdateInfoFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
             'nom'=>'required|string|max:255',
             'prenom'=>'required|string|max:255',
-            'ville'=>'required|string|max:255',
+            'ville'=>'nullable|string|max:255', // Accepté mais ignoré
+            'pays'=>'required|string|max:255',
             'bio'=>'required|string|min:10|max:500',
-            //'mail'=>'required|email|max:255|unique:misses,email',
         ];
     }
 }

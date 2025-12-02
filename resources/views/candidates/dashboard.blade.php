@@ -18,7 +18,7 @@
                     #{{ $rang }} @if ($totalcandidates > 0) sur {{ $totalcandidates }} @endif
                 </span>
                 <span class="bg-orange-400 text-white px-6 py-2 rounded-full font-bold shadow-lg text-sm md:text-base">
-                    {{ $candidate->votes_count }} {{ $candidate->votes_count > 1 ? 'votes' : 'vote' }}
+                    {{ $intervalleVotes }} ({{ $pourcentageCandidate }}%)
                 </span>
             </div>
         </section>
@@ -29,8 +29,9 @@
             <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <div class="min-w-0 flex-1">
-                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Total Votes</p>
-                        <h3 class="text-2xl md:text-3xl font-bold text-pink-600 mt-2 break-words">{{ $candidate->votes_count }}</h3>
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Vos Votes</p>
+                        <h3 class="text-lg md:text-xl font-bold text-pink-600 mt-2 break-words">{{ $intervalleVotes }}</h3>
+                        <p class="text-pink-500 text-xs font-semibold">{{ $pourcentageCandidate }}% du total</p>
                     </div>
                     <div class="bg-pink-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-600 md:w-6 md:h-6">
@@ -46,8 +47,9 @@
             <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <div class="min-w-0 flex-1">
-                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Classement</p>
+                        <p class="text-gray-600 text-xs md:text-sm font-medium truncate">Position</p>
                         <h3 class="text-2xl md:text-3xl font-bold text-orange-600 mt-2 break-words">#{{ $rang }}</h3>
+                        <p class="text-orange-500 text-xs font-semibold">sur {{ $totalcandidates }} candidates</p>
                     </div>
                     <div class="bg-orange-100 p-3 md:p-4 rounded-full flex-shrink-0 ml-2">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-orange-600 md:w-6 md:h-6">
@@ -153,7 +155,7 @@
 
             <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 w-full">
                 <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 break-words">Informations du profil</h2>
-                <form action="/updateinfo" method="post" class="space-y-4">
+                <form action="/updateinfo" method="post" class="space-y-4" id="update-info-form">
                     @csrf
                     <div>
                         <label for="nom" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
@@ -168,10 +170,14 @@
                     </div>
 
                     <div>
-                        <label for="ville" class="block text-sm font-medium text-gray-700 mb-1">Ville</label>
-                        <input type="text" name="ville" id="ville" value="{{ @old('ville', $candidate->pays ?? '') }}" class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm md:text-base">
-                        @error('ville') <p class="text-red-500 text-xs md:text-sm mt-1 break-words">{{ $message }}</p> @enderror
+                        <label for="pays" class="block text-sm font-medium text-gray-700 mb-1">Ville et Pays</label>
+                        <input type="text" name="pays" id="pays" value="{{ @old('pays', $candidate->pays ?? '') }}" placeholder="Ex: Cotonou, Bénin" class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm md:text-base">
+                        @error('pays') <p class="text-red-500 text-xs md:text-sm mt-1 break-words">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-500 mt-1">Indiquez votre ville et pays (ex: Cotonou, Bénin)</p>
                     </div>
+                    
+                    <!-- Champ ville caché pour compatibilité JavaScript -->
+                    <input type="hidden" name="ville" id="ville" value="Compatible">
 
                     <div>
                         <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Biographie</label>
@@ -179,7 +185,7 @@
                         @error('bio') <p class="text-red-500 text-xs md:text-sm mt-1 break-words">{{ $message }}</p> @enderror
                     </div>
 
-                    <button type="submit" class="w-full bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400 text-white py-2 md:py-3 rounded-lg font-semibold hover:shadow-lg transition-all text-sm md:text-base">
+                    <button type="submit" id="submit-info-btn" class="w-full bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400 text-white py-2 md:py-3 rounded-lg font-semibold hover:shadow-lg transition-all text-sm md:text-base">
                         Sauvegarder les modifications
                     </button>
                 </form>
@@ -500,6 +506,93 @@
             reader.readAsDataURL(file);
         }
     });
+
+    // DEBUG POUR LE FORMULAIRE UPDATE INFO
+    const updateForm = document.getElementById('update-info-form');
+    const submitBtn = document.getElementById('submit-info-btn');
+    
+    if (updateForm) {
+        console.log('Formulaire update-info trouvé - VERSION 2.0');
+        
+        updateForm.addEventListener('submit', function(e) {
+            console.log('🔥 SUBMIT EVENT TRIGGERED');
+            console.log('Event:', e);
+            console.log('Action:', this.action);
+            console.log('Method:', this.method);
+            console.log('Form valid:', this.checkValidity());
+            
+            // Vérifier que tous les champs requis sont remplis
+            const nom = document.getElementById('nom').value.trim();
+            const prenom = document.getElementById('prenom').value.trim();
+            const ville = document.getElementById('ville').value.trim();
+            const pays = document.getElementById('pays').value.trim();
+            const bio = document.getElementById('bio').value.trim();
+            
+            console.log('📝 Données à envoyer:', {nom, prenom, ville, pays, bio});
+            console.log('🔍 Vérification:', {
+                'nom_ok': !!nom,
+                'prenom_ok': !!prenom, 
+                'ville_ok': !!ville,
+                'pays_ok': !!pays,
+                'bio_ok': !!bio
+            });
+            
+            // NOUVELLE LOGIQUE - VERSION 2.0
+            console.log('🚀 NOUVELLE VALIDATION ACTIVE');
+            
+            // Seuls nom, prénom et bio sont vraiment obligatoires
+            if (!nom || !prenom || !bio) {
+                console.log('❌ Champs critiques manquants (nom, prenom, bio)');
+                e.preventDefault();
+                alert('Les champs Nom, Prénom et Biographie sont obligatoires');
+                return false;
+            }
+            
+            console.log('✅ Validation passée, préparation des données...');
+            
+            // Auto-fill pour ville et pays si vides
+            if (!ville.trim()) {
+                console.log('⚠️ Ville vide, utilisation de valeur par défaut');
+                document.getElementById('ville').value = 'Non renseigné';
+            }
+            if (!pays.trim()) {
+                console.log('⚠️ Pays vide, utilisation de valeur par défaut');
+                document.getElementById('pays').value = 'Non renseigné';
+            }
+            
+            if (bio.length < 10) {
+                console.log('❌ Bio trop courte:', bio.length);
+                e.preventDefault();
+                alert('La biographie doit contenir au moins 10 caractères');
+                return false;
+            }
+            
+            // Vérifier le token CSRF
+            const csrfToken = document.querySelector('input[name="_token"]');
+            console.log('🔐 CSRF Token:', csrfToken ? csrfToken.value.substring(0, 10) + '...' : 'MANQUANT');
+            
+            // Changer le texte du bouton
+            if (submitBtn) {
+                submitBtn.innerHTML = 'Sauvegarde en cours...';
+                submitBtn.disabled = true;
+            }
+            
+            console.log('✅ Formulaire prêt à être envoyé !');
+            console.log('🚀 Laissons Laravel prendre le relais...');
+            
+            // Ne pas empêcher la soumission - laisser faire
+            return true;
+        });
+        
+        // Debugging supplémentaire
+        submitBtn?.addEventListener('click', function(e) {
+            console.log('🖱️ BOUTON CLIQUÉ');
+            console.log('Button type:', this.type);
+            console.log('Form:', this.form);
+        });
+    } else {
+        console.log('Formulaire update-info NON trouvé !');
+    }
 </script>
 
 @endsection

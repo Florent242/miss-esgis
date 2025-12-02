@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateMediaFilterRequest;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Media;
 use App\Models\Miss;
+use App\Models\Vote;
+use App\Models\VoteLog;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -55,8 +57,48 @@ class MissdashController extends Controller
             $candidate = $stat->firstWhere('id',$missId);
             $rang = $stat->search(fn($m)=> $m->id === $missId) +1 ;
             $totalcandidates = Miss::where('statut','active')->count();
-            //dd($totalcandidates);
-            return view("candidates.dashboard",['medias'=>$medias,'candidate'=>$candidate,'rang'=>$rang,'totalcandidates'=>$totalcandidates]);
+            
+            // Calculer les votes retirés (redirigés depuis cette candidate)
+            $votesRetires = VoteLog::where('old_miss_id', $missId)->count();
+            
+            // Calculer le total des votes de toutes les candidates actives pour les pourcentages
+            $totalVotesTousActives = Vote::whereHas('miss', function($query) {
+                $query->where('statut', 'active');
+            })->count();
+            
+            // Calculer le pourcentage de cette candidate
+            $pourcentageCandidate = $totalVotesTousActives > 0 ? 
+                round(($candidate->votes_count / $totalVotesTousActives) * 100, 1) : 0;
+            
+            // Calculer les pourcentages pour toutes les candidates (pour comparaison)
+            foreach ($stat as $miss) {
+                $miss->percentage = $totalVotesTousActives > 0 ? 
+                    round(($miss->votes_count / $totalVotesTousActives) * 100, 1) : 0;
+            }
+            
+            // Statistiques supplémentaires
+            $votesRecus = Vote::where('miss_id', $missId)->count(); // Votes effectivement reçus
+            $votesOriginaux = Vote::where('miss_id', $missId)->where('is_redirected', false)->count(); // Votes directs
+            $votesRediriges = Vote::where('miss_id', $missId)->where('is_redirected', true)->count(); // Votes reçus par redirection
+            
+            // Afficher le nombre exact de votes
+            $voteCount = $candidate->votes_count;
+            $intervalleVotes = $voteCount . ' vote' . ($voteCount > 1 ? 's' : '');
+            
+            return view("candidates.dashboard", [
+                'medias' => $medias,
+                'candidate' => $candidate,
+                'rang' => $rang,
+                'totalcandidates' => $totalcandidates,
+                'votesRetires' => $votesRetires,
+                'pourcentageCandidate' => $pourcentageCandidate,
+                'totalVotes' => $totalVotesTousActives,
+                'votesRecus' => $votesRecus,
+                'votesOriginaux' => $votesOriginaux,
+                'votesRediriges' => $votesRediriges,
+                'intervalleVotes' => $intervalleVotes,
+                'allCandidates' => $stat // Pour afficher le classement avec pourcentages
+            ]);
         }
          return redirect()->route("MissConnexion")->with('error', "Veuillez vous connecter");
     }
@@ -91,14 +133,41 @@ class MissdashController extends Controller
     }
     public function updateinfo(UpdateInfoFilterRequest $req)
     {
-        $missId=Auth::guard('miss')->user()->id;
-        $miss=Miss::find($missId);
-        $miss->nom= $req->validated("nom") ;
-        $miss->prenom= $req->validated("prenom") ;
-        $miss->pays= $req->validated("ville") ;
-        $miss->bio= $req->validated("bio") ;
-        $miss->save();
-        return redirect()->back();
+        try {
+            $missId = Auth::guard('miss')->user()->id;
+            $miss = Miss::find($missId);
+            
+            if (!$miss) {
+                \Log::error('Miss not found for updateinfo', ['miss_id' => $missId]);
+                return redirect()->back()->with('error', 'Candidate introuvable');
+            }
+            
+            // Log des données reçues
+            \Log::info('Update info attempt', [
+                'miss_id' => $missId,
+                'data' => $req->validated()
+            ]);
+            
+            // Correction du mapping des champs (SANS ville - colonne inexistante)
+            $miss->nom = $req->validated("nom");
+            $miss->prenom = $req->validated("prenom");
+            // VILLE IGNORÉE - colonne n'existe pas en production
+            $miss->pays = $req->validated("pays");
+            $miss->bio = $req->validated("bio");
+            
+            $miss->save();
+            
+            \Log::info('Update info success', ['miss_id' => $missId]);
+            return redirect()->back()->with('success', 'Informations mises à jour avec succès');
+            
+        } catch (\Exception $e) {
+            \Log::error('Update info failed', [
+                'miss_id' => $missId ?? null,
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ]);
+            return redirect()->back()->with('error', 'Erreur lors de la mise à jour: ' . $e->getMessage());
+        }
     }
 
     public function modifiermedia(UpdateMediaFilterRequest $req)
@@ -147,13 +216,39 @@ class MissdashController extends Controller
 
     }
 }
-public function logout(Request $request)
-{
-    Auth::logout();
+    /**
+     * Calculer l'intervalle de votes pour l'affichage discret
+     */
+    private function getVoteInterval($voteCount)
+    {
+        if ($voteCount == 0) {
+            return "0 vote";
+        } elseif ($voteCount <= 10) {
+            return "1-10 votes";
+        } elseif ($voteCount <= 25) {
+            return "11-25 votes";
+        } elseif ($voteCount <= 50) {
+            return "26-50 votes";
+        } elseif ($voteCount <= 100) {
+            return "51-100 votes";
+        } elseif ($voteCount <= 200) {
+            return "101-200 votes";
+        } elseif ($voteCount <= 500) {
+            return "201-500 votes";
+        } elseif ($voteCount <= 1000) {
+            return "501-1000 votes";
+        } else {
+            return "1000+ votes";
+        }
+    }
 
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+    public function logout(Request $request)
+    {
+        Auth::logout();
 
-    return redirect('/');
-}
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
 }

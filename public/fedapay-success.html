@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement en cours - Miss ESGIS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
+            <div class="mb-6">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-4">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600"></div>
+                </div>
+            </div>
+            
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Vérification du paiement...</h1>
+            <p class="text-gray-600 mb-6">Veuillez patienter pendant que nous confirmons votre vote</p>
+            
+            <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-sm text-gray-700">Cette page se mettra à jour automatiquement</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Récupérer la référence du localStorage
+        const reference = localStorage.getItem('fedapay_reference');
+        const missId = localStorage.getItem('fedapay_miss_id');
+        
+        if (!reference || !missId) {
+            window.location.href = '/';
+        }
+
+        let checkCount = 0;
+        const maxChecks = 20; // 20 tentatives = 60 secondes
+
+        function checkPaymentStatus() {
+            checkCount++;
+            
+            if (checkCount > maxChecks) {
+                // Rediriger vers la page de la candidate après timeout
+                window.location.href = '/candidates/' + missId;
+                return;
+            }
+
+            fetch('/api/fedapay/status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ reference: reference })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'completed') {
+                    // Nettoyer le localStorage
+                    localStorage.removeItem('fedapay_reference');
+                    localStorage.removeItem('fedapay_miss_id');
+                    localStorage.removeItem('fedapay_vote_count');
+                    
+                    // Rediriger vers la page de succès
+                    window.location.href = '/vote/' + missId + '/success';
+                } else if (data.status === 'pending') {
+                    // Continuer à vérifier
+                    setTimeout(checkPaymentStatus, 3000);
+                } else {
+                    // Échec ou autre statut
+                    window.location.href = '/candidates/' + missId;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setTimeout(checkPaymentStatus, 3000);
+            });
+        }
+
+        // Démarrer la vérification après 2 secondes
+        setTimeout(checkPaymentStatus, 2000);
+    </script>
+</body>
+</html>

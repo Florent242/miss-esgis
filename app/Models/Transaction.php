@@ -11,9 +11,11 @@ class Transaction extends Model
     protected $fillable = [
         'miss_id',
         'montant',
+        'numero_telephone',
         'methode',
         'reference',
         'statut',
+        'transaction_id',
     ];
 
     public function miss(): BelongsTo

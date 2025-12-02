@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Miss;
+use App\Models\Vote;
+use App\Models\VoteLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +18,9 @@ class CandidateController extends Controller
      */
     public function index()
     {
-        $candidates = Miss::where('statut', 'active')
+        $candidates = Miss::withCount('votes')
+            ->where('statut', 'active')
+            ->orderByDesc('votes_count')
             ->orderBy('prenom')
             ->get();
 
@@ -35,7 +39,19 @@ class CandidateController extends Controller
         $photos = $miss->medias()->where('type', 'photo')->get();
         $video  = $miss->medias()->where('type', 'video')->first();
 
-        return view('candidates.show', compact('miss', 'photos', 'video'));
+        // Calculer le total des votes de toutes les candidates actives pour le pourcentage
+        $totalVotesTousActives = Vote::whereHas('miss', function($query) {
+            $query->where('statut', 'active');
+        })->count();
+        
+        // Calculer le pourcentage de cette candidate
+        $pourcentageCandidate = $totalVotesTousActives > 0 ? 
+            round(($miss->total_votes / $totalVotesTousActives) * 100, 1) : 0;
+        
+        // Ajouter le nombre exact de votes
+        $nombreVotes = $miss->total_votes;
+
+        return view('candidates.show', compact('miss', 'photos', 'video', 'pourcentageCandidate', 'nombreVotes'));
     }
 
     /**

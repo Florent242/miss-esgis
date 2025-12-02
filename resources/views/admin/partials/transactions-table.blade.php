@@ -1,16 +1,23 @@
 @if($transactions->count() > 0)
+    @php
+        $successfulTransactions = $transactions->whereIn('statut', ['success', 'completed']);
+        $totalRevenue = $successfulTransactions->sum('montant');
+        $averageAmount = $successfulTransactions->count() > 0 ? $successfulTransactions->avg('montant') : 0;
+    @endphp
+    
     <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
             <p class="text-blue-600 text-sm font-medium">Total des transactions</p>
             <p class="text-2xl font-bold text-blue-900 mt-1">{{ $transactions->count() }}</p>
+            <p class="text-xs text-gray-600 mt-1">Dont {{ $successfulTransactions->count() }} réussies</p>
         </div>
         <div class="bg-green-50 rounded-lg p-4 border border-green-200">
-            <p class="text-green-600 text-sm font-medium">Revenus totaux</p>
-            <p class="text-2xl font-bold text-green-900 mt-1">{{ number_format($transactions->sum('montant'), 0, ',', ' ') }} FCFA</p>
+            <p class="text-green-600 text-sm font-medium">Revenus (transactions réussies)</p>
+            <p class="text-2xl font-bold text-green-900 mt-1">{{ number_format($totalRevenue, 0, ',', ' ') }} FCFA</p>
         </div>
         <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-            <p class="text-purple-600 text-sm font-medium">Montant moyen</p>
-            <p class="text-2xl font-bold text-purple-900 mt-1">{{ number_format($transactions->avg('montant'), 0, ',', ' ') }} FCFA</p>
+            <p class="text-purple-600 text-sm font-medium">Montant moyen (réussies)</p>
+            <p class="text-2xl font-bold text-purple-900 mt-1">{{ number_format($averageAmount, 0, ',', ' ') }} FCFA</p>
         </div>
     </div>
 
