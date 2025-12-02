@@ -18,90 +18,54 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
             echo "Déploiement en cours..."
-            
+
             # Aller dans le répertoire du projet
             cd ${{ secrets.DEPLOY_PATH }}
-            
+
             # Mettre l'application en mode maintenance
             php artisan down || true
-            
+
             # Forcer la récupération depuis GitHub (écraser les changements locaux)
             echo "Récupération forcée depuis GitHub..."
             git fetch origin main
-            
-            # Réinitialiser complètement au dernier commit de origin/main
-            echo "Écrasement des changements locaux..."
-            git reset --hard origin/main
-            
-            # Nettoyer les fichiers non trackés
-            git clean -fd
-            
-            # Installer/mettre à jour les dépendances Composer
-            echo "Installation des dépendances PHP..."
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-            
+
             # Installer/mettre à jour les dépendances NPM et builder les assets
             echo "Build des assets..."
-            
+
             # Charger Node.js 24 via nvm
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
+
             # Utiliser Node.js 24
             nvm use 24 || nvm use default
-            
+
             # Ajouter les chemins possibles pour npm
             export PATH="$NVM_DIR/versions/node/$(nvm current)/bin:/snap/bin:/usr/local/bin:/usr/bin:$HOME/.npm-global/bin:$PATH"
-            
+
             # Vérifier les versions
             echo "Node version:"
             node -v
             echo "NPM version:"
             npm -v
-            
+
             # Installer les dépendances et builder
-            npm ci --prefer-offline --no-audit
             npm run build
-            
-            # Nettoyer le cache intégralement
-            echo "Nettoyage intégral du cache Laravel..."
-            php artisan cache:clear
-            php artisan config:clear
-            php artisan route:clear
-            php artisan view:clear
-            php artisan event:clear
-            php artisan optimize:clear
-            
+
             # Exécuter les migrations (sans fresh pour préserver les données)
             echo "Exécution des migrations..."
-            php artisan migrate --force
-            
-            # Seeder pour l'admin uniquement (sans écraser les données)
-            echo "Création/mise à jour de l'admin..."
-            php artisan db:seed --class=AdminUserSeeder --force
-            
+
             # Optimiser pour la production
             echo "Optimisation..."
             php artisan config:cache
             php artisan route:cache
-            
-            # Créer le lien symbolique pour le storage (ignorer si existe déjà)
-            php artisan storage:link 2>/dev/null || echo "Le lien symbolique existe déjà"
-            
-            # Permissions (sans sudo - assurez-vous que les permissions sont déjà configurées)
-            echo "Configuration des permissions..."
-            chmod -R 775 storage bootstrap/cache 2>/dev/null || echo "Permissions configurées"
-            
+
             # Redémarrer les services (sans sudo)
             echo "Redémarrage des services..."
             php artisan queue:restart || true
-            
-            # Note: Les services PHP-FPM et Nginx ne seront pas rechargés automatiquement
-            # Vous devrez les recharger manuellement ou configurer sudo sans mot de passe
-            
+
             # Remettre l'application en ligne
             php artisan up
-            
+
             echo "Déploiement terminé avec succès !"
             echo "Note: Rechargez manuellement php8.1-fpm et nginx si nécessaire"
           EOF
